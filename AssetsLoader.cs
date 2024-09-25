@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using FontStashSharp;
 using Microsoft.Xna.Framework.Audio;
@@ -16,26 +17,22 @@ class AssetsLoader
         FontSystemDefaults.FontResolutionFactor = 2;
         FontSystemDefaults.KernelWidth = 2;
         FontSystemDefaults.KernelHeight = 2;
-
-
-
     }
     public Texture2D loadTexture2D(string path)
     {
-        return Texture2D.FromStream(_graphicsDevice, new FileStream(path.Substring(1), FileMode.Open));
+        return Texture2D.FromStream(_graphicsDevice, new FileStream(path, FileMode.Open));
     }
     public SoundEffect loadSoundEffect(string path)
     {
-        return SoundEffect.FromStream(new FileStream(path.Substring(1), FileMode.Open));
+        return SoundEffect.FromStream(new FileStream(path, FileMode.Open));
     }
 
     public FontSystem loadFont(string path)
     {
         var fontSystem = new FontSystem();
-        fontSystem.AddFont(File.ReadAllBytes(path.Substring(1)));
+        fontSystem.AddFont(File.ReadAllBytes(path));
         return fontSystem;
     }
-
     public SoundEffectInstance playSound(SoundEffect soundEffect, float pitch = 0, float volume = 1, bool isLooped = false)
     {
         var soundEffectInstance = soundEffect.CreateInstance();

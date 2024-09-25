@@ -1,3 +1,2 @@
-﻿using MyDemo;
-using var game = new MyGame();
+﻿var game = new MyDemo.MyGame();
 game.Run();

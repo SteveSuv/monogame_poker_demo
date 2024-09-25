@@ -1,7 +1,5 @@
-﻿using System;
-using FontStashSharp;
+﻿using FontStashSharp;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Input;
@@ -20,7 +18,7 @@ public class MyGame : Game
 
     public MyGame()
     {
-        Window.Title = "MyDemo001";
+        Window.Title = "仲夏夜之梦";
         _graphics = new GraphicsDeviceManager(this);
         IsMouseVisible = true;
     }
@@ -38,13 +36,13 @@ public class MyGame : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         _assetsLoader = new AssetsLoader(GraphicsDevice);
 
-        texture2D = _assetsLoader.loadTexture2D("/Assets/sprites/arrow_basic_e.png");
-        fontSystem = _assetsLoader.loadFont("/Assets/fonts/youquti.ttf");
+        texture2D = _assetsLoader.loadTexture2D("Assets/sprites/arrow_basic_e.png");
+        fontSystem = _assetsLoader.loadFont("Assets/fonts/youquti.ttf");
     }
 
     protected override void BeginRun()
     {
-        _assetsLoader.playSound(path: "/Assets/sounds/menu.wav", isLooped: true);
+        _assetsLoader.playSound(path: "Assets/sounds/menu.wav", isLooped: true);
         base.BeginRun();
     }
 
@@ -63,13 +61,10 @@ public class MyGame : Game
 
         if (mouseState.WasButtonPressed(MouseButton.Left))
         {
-            _assetsLoader.playSound(path: "/Assets/sounds/btn_click.wav");
+            _assetsLoader.playSound(path: "Assets/sounds/btn_click.wav");
         }
 
-
         base.Update(gameTime);
-
-
     }
 
 
