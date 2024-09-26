@@ -1,13 +1,9 @@
-using System;
-using System.IO;
 using FontStashSharp;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 
 class AssetsLoader
 {
-
-
     private GraphicsDevice _graphicsDevice;
 
     public AssetsLoader(GraphicsDevice graphicsDevice)
