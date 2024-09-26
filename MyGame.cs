@@ -4,12 +4,13 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Graphics;
 using MonoGame.Extended.Input;
+using MonoGame.Extended.Input.InputListeners;
 using MonoGame.Extended.ViewportAdapters;
 
 
 public class MyGame : Game
 {
-    private GraphicsDeviceManager _graphics;
+    // private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
     private AssetsLoader _assetsLoader;
 
@@ -21,20 +22,41 @@ public class MyGame : Game
     private Texture2DAtlas _cards;
     private OrthographicCamera _camera;
 
+    private KeyboardListener _keyboardListener;
+
 
     public MyGame()
     {
         Window.Title = "德州扑克";
-        _graphics = new GraphicsDeviceManager(this);
+        new GraphicsDeviceManager(this);
         IsMouseVisible = true;
 
     }
-    
+
+    // protected override void Initialize()
+    // {
+
+    // }
+
     protected override void LoadContent()
     {
 
         var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, 800, 480);
         _camera = new OrthographicCamera(viewportAdapter);
+
+        _keyboardListener = new KeyboardListener();
+        _keyboardListener.KeyPressed += (sender, eventArgs) =>
+        {
+            // if (eventArgs.Key == Keys.Enter && _adventurer.CurrentAnimation == "idle")
+            // {
+            //     _adventurer.SetAnimation("attack");
+            // }
+            if (eventArgs.Key == Keys.Enter)
+            {
+                Window.Title = DateTime.Now.ToLongTimeString();
+            }
+        };
+
 
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         _assetsLoader = new AssetsLoader(GraphicsDevice);
@@ -48,26 +70,29 @@ public class MyGame : Game
     protected override void Update(GameTime gameTime)
     {
 
+        _keyboardListener.Update(gameTime);
         MouseExtended.Update();
         KeyboardExtended.Update();
-        var mouseState = MouseExtended.GetState();
-        var keyboardState = KeyboardExtended.GetState();
 
-        if (keyboardState.WasKeyPressed(Keys.Escape))
+        var mouse = MouseExtended.GetState();
+        var keyboard = KeyboardExtended.GetState();
+
+        if (keyboard.WasKeyPressed(Keys.Escape))
         {
             Console.WriteLine("ESC");
             Exit();
         }
 
-        if (mouseState.WasButtonPressed(MouseButton.Left))
+
+        if (mouse.WasButtonPressed(MouseButton.Left))
         {
             // _assetsLoader.playSound(path: "Assets/sounds/btn_click.wav");
         }
-        var movementSpeed = keyboardState.IsKeyDown(Keys.LeftShift) ? 500 : 200;
-        _camera.Move(GetMovementDirection() * movementSpeed * gameTime.GetElapsedSeconds());
 
-        // Add this to the Update() method
-        AdjustZoom();
+        MoveCamera(gameTime);
+        ZoomCamera(gameTime);
+        RotateCamera(gameTime);
+        PitchCamera(gameTime);
 
         base.Update(gameTime);
     }
@@ -82,58 +107,96 @@ public class MyGame : Game
 
         // _spriteBatch.Draw(texture: texture2D, position: new Vector2(100, 100), color: Color.White);
         // _spriteBatch.DrawString(font: fontSystem.GetFont(30), text: "你是谁", position: new Vector2(0, 0), color: Color.Yellow, effect: FontSystemEffect.Stroked, effectAmount: 1);
-        for (int i = 0; i < 3 * 5; i++)
+        for (int i = 0; i < 13; i++)
         {
             var card = _cards[i];
             _spriteBatch.Draw(card, new Vector2(card.Width * i, 0), Color.White);
         }
 
-        // _spriteBatch.DrawCircle(new Vector2(0, 500), 150, 4, Color.Red);
-        _spriteBatch.DrawRectangle(new RectangleF(250, 250, 50, 50), Color.Black, 1f);
+        _spriteBatch.DrawCircle(new CircleF(new Vector2(150, 150), 100), 100, Color.Red, 10);
+        _spriteBatch.DrawRectangle(new RectangleF(new Vector2(250, 250), new SizeF(50, 50)), Color.Black, 10);
 
         _spriteBatch.End();
 
         base.Draw(gameTime);
     }
 
-    private Vector2 GetMovementDirection()
+    private void MoveCamera(GameTime gameTime)
     {
-        var movementDirection = Vector2.Zero;
-        var state = Keyboard.GetState();
-        if (state.IsKeyDown(Keys.Down))
+        var dir = Vector2.Zero;
+        var keyboard = KeyboardExtended.GetState();
+        var speed = keyboard.IsShiftDown() ? 500 : 200;
+
+
+        if (keyboard.IsKeyDown(Keys.W))
         {
-            movementDirection += Vector2.UnitY;
+            dir -= Vector2.UnitY;
         }
-        if (state.IsKeyDown(Keys.Up))
+        if (keyboard.IsKeyDown(Keys.A))
         {
-            movementDirection -= Vector2.UnitY;
+            dir -= Vector2.UnitX;
         }
-        if (state.IsKeyDown(Keys.Left))
+        if (keyboard.IsKeyDown(Keys.S))
         {
-            movementDirection -= Vector2.UnitX;
+            dir += Vector2.UnitY;
         }
-        if (state.IsKeyDown(Keys.Right))
+        if (keyboard.IsKeyDown(Keys.D))
         {
-            movementDirection += Vector2.UnitX;
+            dir += Vector2.UnitX;
         }
-        return movementDirection;
+
+
+        _camera.Move(dir * speed * gameTime.GetElapsedSeconds());
+
     }
 
-    // Add this to the Game1.cs file
-    private void AdjustZoom()
+    private void ZoomCamera(GameTime gameTime)
     {
-        var state = Keyboard.GetState();
-        float zoomPerTick = state.IsKeyDown(Keys.LeftShift) ? 0.05f : 0.01f;
-        if (state.IsKeyDown(Keys.Z))
+        var keyboard = KeyboardExtended.GetState();
+        var speed = keyboard.IsShiftDown() ? 5 : 1;
+
+        if (keyboard.IsKeyDown(Keys.Z))
         {
-            _camera.ZoomIn(zoomPerTick);
+            _camera.ZoomIn(speed * gameTime.GetElapsedSeconds());
         }
-        if (state.IsKeyDown(Keys.X))
+        if (keyboard.IsKeyDown(Keys.X))
         {
-            _camera.ZoomOut(zoomPerTick);
+            _camera.ZoomOut(speed * gameTime.GetElapsedSeconds());
         }
     }
 
+
+    private void RotateCamera(GameTime gameTime)
+    {
+        var keyboard = KeyboardExtended.GetState();
+        var speed = keyboard.IsShiftDown() ? 5 : 1;
+
+        if (keyboard.IsKeyDown(Keys.Q))
+        {
+            _camera.Rotate(speed * gameTime.GetElapsedSeconds());
+        }
+        if (keyboard.IsKeyDown(Keys.E))
+        {
+            _camera.Rotate(-speed * gameTime.GetElapsedSeconds());
+        }
+    }
+
+
+    private void PitchCamera(GameTime gameTime)
+    {
+        var keyboard = KeyboardExtended.GetState();
+        var isShiftDown = keyboard.IsShiftDown();
+        var speed = isShiftDown ? 5 : 1;
+
+        if (keyboard.IsKeyDown(Keys.R))
+        {
+            _camera.PitchUp(speed * gameTime.GetElapsedSeconds());
+        }
+        if (keyboard.IsKeyDown(Keys.T))
+        {
+            _camera.PitchDown(speed * gameTime.GetElapsedSeconds());
+        }
+    }
 
 
 }
