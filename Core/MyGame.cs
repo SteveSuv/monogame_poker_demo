@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
@@ -6,13 +6,14 @@ using MonoGame.Extended.Graphics;
 using MonoGame.Extended.Input;
 using MonoGame.Extended.Input.InputListeners;
 using MonoGame.Extended.ViewportAdapters;
+using FontStashSharp;
 
 
-public class MyGame : Game
+class MyGame : Game
 {
-    // private GraphicsDeviceManager _graphics;
+    public static GraphicsDeviceManager graphics;
     private SpriteBatch _spriteBatch;
-    private AssetsLoader _assetsLoader;
+
 
     // Texture2D texture2D;
 
@@ -27,23 +28,16 @@ public class MyGame : Game
 
     public MyGame()
     {
-        Window.Title = "德州扑克";
-        new GraphicsDeviceManager(this);
+        Window.Title = "PokerGame";
+        graphics = new GraphicsDeviceManager(this);
         IsMouseVisible = true;
-
     }
 
-    // protected override void Initialize()
-    // {
-
-    // }
 
     protected override void LoadContent()
     {
-
         var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, 800, 480);
         _camera = new OrthographicCamera(viewportAdapter);
-
         _keyboardListener = new KeyboardListener();
         _keyboardListener.KeyPressed += (sender, eventArgs) =>
         {
@@ -59,9 +53,9 @@ public class MyGame : Game
 
 
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-        _assetsLoader = new AssetsLoader(GraphicsDevice);
 
-        _cards = Texture2DAtlas.Create("Atlas/Cards", _assetsLoader.loadTexture2D("Assets/textures/cards/Clubs-88x124.png"), 88, 124);
+
+        _cards = Texture2DAtlas.Create("Atlas/Cards", Assets.TextureBlackClubs, 88, 124);
 
         // texture2D = _assetsLoader.loadTexture2D("Assets/sprites/arrow_basic_e.png");
         // fontSystem = _assetsLoader.loadFont("Assets/fonts/youquti.ttf");
@@ -84,8 +78,9 @@ public class MyGame : Game
         }
 
 
-        if (mouse.WasButtonPressed(MouseButton.Left))
+        if (mouse.WasButtonPressed(MouseButton.Middle))
         {
+            graphics.ToggleFullScreen();
             // _assetsLoader.playSound(path: "Assets/sounds/btn_click.wav");
         }
 
@@ -102,11 +97,11 @@ public class MyGame : Game
         GraphicsDevice.Clear(Color.SlateGray);
 
         var transformMatrix = _camera.GetViewMatrix();
-        _spriteBatch.Begin(transformMatrix: transformMatrix);
+        _spriteBatch.Begin(transformMatrix: transformMatrix, blendState: BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
 
 
         // _spriteBatch.Draw(texture: texture2D, position: new Vector2(100, 100), color: Color.White);
-        // _spriteBatch.DrawString(font: fontSystem.GetFont(30), text: "你是谁", position: new Vector2(0, 0), color: Color.Yellow, effect: FontSystemEffect.Stroked, effectAmount: 1);
+        // _spriteBatch.DrawString(font: fontSystem.GetFont(30), text: "����˭", position: new Vector2(0, 0), color: Color.Yellow, effect: FontSystemEffect.Stroked, effectAmount: 1);
         for (int i = 0; i < 13; i++)
         {
             var card = _cards[i];
@@ -115,6 +110,7 @@ public class MyGame : Game
 
         _spriteBatch.DrawCircle(new CircleF(new Vector2(150, 150), 100), 100, Color.Red, 10);
         _spriteBatch.DrawRectangle(new RectangleF(new Vector2(250, 250), new SizeF(50, 50)), Color.Black, 10);
+        _spriteBatch.DrawString(Assets.FontYouquti.GetFont(60), "你好呀", new Vector2(200, 200), Color.Purple, 0, characterSpacing: 2,effect: FontSystemEffect.Stroked, effectAmount: 1);
 
         _spriteBatch.End();
 
