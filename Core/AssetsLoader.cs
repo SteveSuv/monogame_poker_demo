@@ -4,15 +4,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 static class AssetsLoader
 {
-    // private GraphicsDevice _graphicsDevice;
-
-    // public AssetsLoader(GraphicsDevice graphicsDevice)
-    // {
-    //     _graphicsDevice = graphicsDevice;
-    // }
     public static Texture2D loadTexture2D(string path)
     {
-        return Texture2D.FromFile(MyGame.graphics.GraphicsDevice, path.Substring(1));
+        return Texture2D.FromFile(MyGame.instance.GraphicsDevice, path.Substring(1));
     }
     public static SoundEffect loadSoundEffect(string path)
     {
@@ -25,6 +19,11 @@ static class AssetsLoader
         fontSystem.AddFont(File.ReadAllBytes(path.Substring(1)));
         return fontSystem;
     }
+}
+
+
+
+ 
     // public SoundEffectInstance playSound(SoundEffect soundEffect, float pitch = 0, float volume = 1, bool isLooped = false)
     // {
     //     var soundEffectInstance = soundEffect.CreateInstance();
@@ -45,4 +44,3 @@ static class AssetsLoader
     //     soundEffectInstance.Play();
     //     return soundEffectInstance;
     // }
-}
