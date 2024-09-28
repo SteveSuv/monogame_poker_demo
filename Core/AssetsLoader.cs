@@ -6,7 +6,7 @@ static class AssetsLoader
 {
     public static Texture2D loadTexture2D(string path)
     {
-        return Texture2D.FromFile(MyGame.instance.GraphicsDevice, path.Substring(1));
+        return Texture2D.FromFile(MyGame.graphics.GraphicsDevice, path.Substring(1));
     }
     public static SoundEffect loadSoundEffect(string path)
     {
@@ -20,27 +20,3 @@ static class AssetsLoader
         return fontSystem;
     }
 }
-
-
-
- 
-    // public SoundEffectInstance playSound(SoundEffect soundEffect, float pitch = 0, float volume = 1, bool isLooped = false)
-    // {
-    //     var soundEffectInstance = soundEffect.CreateInstance();
-    //     soundEffectInstance.Pitch = pitch;
-    //     soundEffectInstance.Volume = volume;
-    //     soundEffectInstance.IsLooped = isLooped;
-    //     soundEffectInstance.Play();
-    //     return soundEffectInstance;
-    // }
-
-    // public SoundEffectInstance playSound(string path, float pitch = 0, float volume = 1, bool isLooped = false)
-    // {
-    //     var soundEffect = loadSoundEffect(path);
-    //     var soundEffectInstance = soundEffect.CreateInstance();
-    //     soundEffectInstance.Pitch = pitch;
-    //     soundEffectInstance.Volume = volume;
-    //     soundEffectInstance.IsLooped = isLooped;
-    //     soundEffectInstance.Play();
-    //     return soundEffectInstance;
-    // }

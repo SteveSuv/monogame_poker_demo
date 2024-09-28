@@ -2,54 +2,67 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Graphics;
-using MonoGame.Extended.Input;
 using MonoGame.Extended.Collections;
+using MonoGame.Extended;
+using MonoGame.Extended.Timers;
+using MonoGame.Extended.Input;
+using Microsoft.Xna.Framework.Audio;
 
 
 class MyGame : Game
 {
-    private GraphicsDeviceManager _graphics;
-    private SpriteBatch _spriteBatch;
+    public static GraphicsDeviceManager graphics;
+    public static SpriteBatch spriteBatch;
+    public static GameWindow window;
+    public static bool isDebug = false;
+    public static int screenWidth => 1920 / 2;
+    public static int screenHeight => 1080 / 2;
+    public static Color debugColor => Color.Red;
 
-    static public MyGame instance;
+    public static Vector2 screenCenter => new Vector2(screenWidth / 2, screenHeight / 2) - _cameraController.camera.Center;
 
     private Texture2DAtlas _textureCardsBlackClubs;
     private Texture2DAtlas _textureCardsBlackSpades;
     private Texture2DAtlas _textureCardsRedDiamonds;
     private Texture2DAtlas _textureCardsRedHearts;
-    private Camera _camera;
-
-    // private KeyboardListener _keyboardListener;
-
+    private static CameraController _cameraController;
     private IList<Texture2DRegion> _cardList;
+    private ContinuousClock _clock;
+
+    private Sound _sound;
 
 
     public MyGame()
     {
-        Window.Title = "PokerGame";
-        _graphics = new GraphicsDeviceManager(this);
+        Window.Title = $"PokerGame {screenWidth}x{screenHeight}";
+        Window.AllowAltF4 = false;
+        Window.AllowUserResizing = false;
+
+        window = Window;
+
         IsMouseVisible = true;
+
+        graphics = new GraphicsDeviceManager(this)
+        {
+            PreferredBackBufferWidth = screenWidth,
+            PreferredBackBufferHeight = screenHeight,
+            IsFullScreen = false
+        };
+        graphics.ApplyChanges();
     }
 
 
     protected override void LoadContent()
     {
 
-        instance = this;
+        spriteBatch = new SpriteBatch(GraphicsDevice);
 
-        _camera = new Camera();
+        _cameraController = new CameraController();
 
-        // _keyboardListener = new KeyboardListener();
-        // _keyboardListener.KeyPressed += (sender, eventArgs) =>
-        // {
-        //     if (eventArgs.Key == Keys.Enter && _adventurer.CurrentAnimation == "idle")
-        //     {
-        //         _adventurer.SetAnimation("attack");
-        //     }
-        // };
+        _clock = new ContinuousClock(0.1);
+        _clock.Pause();
 
-
-        _spriteBatch = new SpriteBatch(GraphicsDevice);
+        _sound = new Sound(Assets.SoundMouseClick) { volume = 0.5f };
 
         _textureCardsBlackClubs = Texture2DAtlas.Create("Atlas/TextureCardsBlackClubs", Assets.TextureCardsBlackClubs, 88, 124, 13);
         _textureCardsBlackSpades = Texture2DAtlas.Create("Atlas/TextureCardsBlackSpades", Assets.TextureCardsBlackSpades, 88, 124, 13);
@@ -63,42 +76,62 @@ class MyGame : Game
         list.AddRange([.. _textureCardsRedHearts]);
 
         _cardList = list.Shuffle(Random.Shared);
+
+        _clock.Tick += (object sender, EventArgs e) =>
+        {
+            _cardList = list.Shuffle(Random.Shared);
+        };
     }
 
     protected override void Update(GameTime gameTime)
     {
-
-        Window.Title = DateTime.Now.ToLongTimeString();
-
-        // _keyboardListener.Update(gameTime);
-
-        MouseExtended.Update();
-        KeyboardExtended.Update();
-
         var mouse = MouseExtended.GetState();
         var keyboard = KeyboardExtended.GetState();
 
+        if (mouse.WasButtonPressed(MouseButton.Left) && IsActive)
+        {
+            Console.WriteLine("click");
+            _sound.Play();
+        }
+
         if (keyboard.WasKeyPressed(Keys.Escape))
         {
-            Console.WriteLine("ESC");
             Exit();
         }
 
+        if (keyboard.WasKeyPressed(Keys.NumPad0))
+        {
+            isDebug = !isDebug;
+        }
 
-        // if (mouse.WasButtonPressed(MouseButton.Right))
-        // {
-        //     graphics.ToggleFullScreen();
-        //     _assetsLoader.playSound(path: "Assets/sounds/btn_click.wav");
-        // }
+        if (keyboard.WasKeyPressed(Keys.NumPad1))
+        {
+            _cameraController.isShaking = !_cameraController.isShaking;
+        }
+
+        if (keyboard.WasKeyPressed(Keys.NumPad2))
+        {
+            _cameraController.resetCamera();
+        }
 
         if (keyboard.WasKeyPressed(Keys.M))
         {
-            _cardList = _cardList.Shuffle(Random.Shared);
+            if (_clock.State == TimerState.Paused)
+            {
+                _clock.Start();
+            }
+            else
+            {
+                _clock.Pause();
+            }
         }
 
+        // updates
+        _cameraController.Update(gameTime);
+        _clock.Update(gameTime);
 
-        _camera.Update(gameTime);
-
+        MouseExtended.Update();
+        KeyboardExtended.Update();
         base.Update(gameTime);
     }
 
@@ -106,21 +139,18 @@ class MyGame : Game
     {
         GraphicsDevice.Clear(new Color(0, 128, 128, 100));
 
+        spriteBatch.Begin(transformMatrix: _cameraController.camera.GetViewMatrix(), blendState: BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
 
-        _spriteBatch.Begin(transformMatrix: _camera.GetViewMatrix(), blendState: BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
 
-        for (int i = 0; i < 5; i++)
+        var card = new Sprite(_cardList[0]) { position = screenCenter, origin = Origin.center };
+        card.Draw(gameTime);
+        if (isDebug)
         {
-            var card = _cardList[i];
-
-            _spriteBatch.Draw(card, new Vector2(_graphics.PreferredBackBufferWidth / 2 + card.Width * i, _graphics.PreferredBackBufferHeight / 2), Color.White);
+            spriteBatch.DrawPoint(screenCenter, debugColor, 4);
         }
+        _cameraController.Draw(gameTime);
 
-        // _spriteBatch.DrawCircle(new CircleF(new Vector2(150, 150), 100), 100, Color.Red, 10);
-        // _spriteBatch.DrawRectangle(new RectangleF(new Vector2(250, 250), new SizeF(50, 50)), Color.Black, 10);
-        // _spriteBatch.DrawString(Assets.FontYouquti.GetFont(60), "你好呀", new Vector2(200, 200), Color.Purple, 0, characterSpacing: 2, effect: FontSystemEffect.Stroked, effectAmount: 1);
-
-        _spriteBatch.End();
+        spriteBatch.End();
 
         base.Draw(gameTime);
     }
