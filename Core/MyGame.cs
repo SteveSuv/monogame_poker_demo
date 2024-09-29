@@ -6,8 +6,6 @@ using MonoGame.Extended.Collections;
 using MonoGame.Extended;
 using MonoGame.Extended.Timers;
 using MonoGame.Extended.Input;
-using Microsoft.Xna.Framework.Audio;
-
 
 class MyGame : Game
 {
@@ -31,10 +29,13 @@ class MyGame : Game
 
     private Sound _sound;
 
+    private PeerServer _peerServer;
+    private PeerCient _peerClient;
+
 
     public MyGame()
     {
-        Window.Title = $"PokerGame {screenWidth}x{screenHeight}";
+        Window.Title = $"PokerGame1 {screenWidth}x{screenHeight}";
         Window.AllowAltF4 = false;
         Window.AllowUserResizing = false;
 
@@ -54,6 +55,14 @@ class MyGame : Game
 
     protected override void LoadContent()
     {
+
+
+        _peerServer = new PeerServer();
+        _peerClient = new PeerCient();
+
+        _peerServer.Start(9000);
+        _peerClient.Connect(port:9000);
+
 
         spriteBatch = new SpriteBatch(GraphicsDevice);
 
@@ -90,7 +99,6 @@ class MyGame : Game
 
         if (mouse.WasButtonPressed(MouseButton.Left) && IsActive)
         {
-            Console.WriteLine("click");
             _sound.Play();
         }
 
@@ -99,36 +107,51 @@ class MyGame : Game
             Exit();
         }
 
-        if (keyboard.WasKeyPressed(Keys.NumPad0))
+
+        if (keyboard.WasKeyPressed(Keys.L))
         {
-            isDebug = !isDebug;
+            _peerClient.SendMessageToAll("hello1");
         }
 
-        if (keyboard.WasKeyPressed(Keys.NumPad1))
-        {
-            _cameraController.isShaking = !_cameraController.isShaking;
-        }
 
-        if (keyboard.WasKeyPressed(Keys.NumPad2))
+        if (keyboard.IsControlDown())
         {
-            _cameraController.resetCamera();
-        }
-
-        if (keyboard.WasKeyPressed(Keys.M))
-        {
-            if (_clock.State == TimerState.Paused)
+            if (keyboard.WasKeyPressed(Keys.D))
             {
-                _clock.Start();
+                isDebug = !isDebug;
             }
-            else
+
+            if (keyboard.WasKeyPressed(Keys.S))
             {
-                _clock.Pause();
+                _cameraController.isShaking = !_cameraController.isShaking;
+            }
+
+            if (keyboard.WasKeyPressed(Keys.R))
+            {
+                _cameraController.resetCamera();
+            }
+
+            if (keyboard.WasKeyPressed(Keys.C))
+            {
+                if (_clock.State == TimerState.Paused)
+                {
+                    _clock.Start();
+                }
+                else
+                {
+                    _clock.Pause();
+                }
             }
         }
+
+
 
         // updates
         _cameraController.Update(gameTime);
         _clock.Update(gameTime);
+
+        _peerServer.Update();
+        _peerClient.Update();
 
         MouseExtended.Update();
         KeyboardExtended.Update();
@@ -143,7 +166,7 @@ class MyGame : Game
 
 
         var card = new Sprite(_cardList[0]) { position = screenCenter, origin = Origin.center };
-        card.Draw(gameTime);
+        // card.Draw(gameTime);
         if (isDebug)
         {
             spriteBatch.DrawPoint(screenCenter, debugColor, 4);

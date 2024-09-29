@@ -1,0 +1,61 @@
+using LiteNetLib;
+using LiteNetLib.Utils;
+
+class PeerCient
+{
+    private NetManager _client;
+    private EventBasedNetListener _clientListener;
+    private NetPeer _serverPeer;
+
+
+    public PeerCient()
+    {
+        _clientListener = new EventBasedNetListener();
+
+        _client = new NetManager(_clientListener) { AutoRecycle = true };
+
+        _clientListener.PeerConnectedEvent += serverPeer =>
+        {
+            Console.WriteLine("Client: Connected to server: " + serverPeer.Id);
+            _serverPeer = serverPeer;
+        };
+
+        _clientListener.PeerDisconnectedEvent += (serverPeer, disconnectInfo) =>
+        {
+            Console.WriteLine("Client: Disconnected from server: " + serverPeer.Id);
+        };
+
+        _clientListener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod, channel) =>
+        {
+            var message = dataReader.GetString();
+            Console.WriteLine($"Client: Received data from {fromPeer.Id}: {message}");
+        };
+    }
+
+    public void Connect(string address = "localhost", int port = 9000, string key = "test")
+    {
+        _client.Start();
+        _client.Connect(address, port, key);
+        Console.WriteLine("Client: Client Connect.");
+    }
+
+    public void Stop()
+    {
+        _client.Stop();
+    }
+
+    public void Update()
+    {
+        _client.PollEvents();
+    }
+
+    public void SendMessageToAll(string message)
+    {
+        if (_serverPeer != null)
+        {
+            var writer = new NetDataWriter();
+            writer.Put(message);
+            _serverPeer.Send(writer, DeliveryMethod.ReliableOrdered);
+        }
+    }
+}

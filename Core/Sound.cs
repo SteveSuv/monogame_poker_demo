@@ -2,7 +2,6 @@ using Microsoft.Xna.Framework.Audio;
 
 class Sound
 {
-
     public float pitch = 0;
     public float volume = 1;
     public bool isLooped = false;

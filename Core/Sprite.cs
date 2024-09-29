@@ -3,9 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Graphics;
 
-
-
-
 class Sprite : Actor
 {
 
