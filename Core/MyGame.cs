@@ -5,6 +5,8 @@ using MonoGame.Extended.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Timers;
 using MonoGame.Extended.Input;
+using FontStashSharp;
+
 
 class MyGame : Game
 {
@@ -12,31 +14,32 @@ class MyGame : Game
     public static SpriteBatch spriteBatch;
     public static GameWindow window;
     public static bool isDebug = true;
-    public static int screenWidth => 1920 / 2;
-    public static int screenHeight => 1080 / 2;
-    public static Color debugColor => Color.Red;
-
-    public static Vector2 screenCenter => new Vector2(screenWidth / 2, screenHeight / 2) - _cameraController.camera.Center;
-
+    public static int ScreenWidth => 1920 / 2;
+    public static int ScreenHeight => 1080 / 2;
+    public static Color DebugColor => Color.Red;
+    public static Vector2 ScreenCenter => new(ScreenWidth / 2, ScreenHeight / 2);
     private Texture2DAtlas _textureCardsBlackClubs;
-    // private Texture2DAtlas _textureCardsBlackSpades;
-    // private Texture2DAtlas _textureCardsRedDiamonds;
-    // private Texture2DAtlas _textureCardsRedHearts;
-    private static CameraController _cameraController;
-    // private IList<Texture2DRegion> _cardList;
     private ContinuousClock _clock;
-
-    private Sound _sound;
-
+    private Sound _soundMouseClick;
     private PeerServer _peerServer;
     private PeerCient _peerClient;
-
     private int _regionIndex = 0;
+
+    private static Label Title => new(DateTime.Now.ToLongTimeString()) { color = Color.Yellow, effect = FontSystemEffect.Stroked, fontSize = 50, position = ScreenCenter, origin = Origin.Center };
+
+    private SpriteRegion Card => new(_textureCardsBlackClubs[_regionIndex]) { position = ScreenCenter, origin = Origin.Center };
+
+
+    public static void Print(params object[] values)
+    {
+        var result = string.Join(" ", values);
+        Console.WriteLine(result);
+    }
 
 
     public MyGame()
     {
-        Window.Title = $"PokerGame1 {screenWidth}x{screenHeight}";
+        Window.Title = $"PokerGame1 {ScreenWidth}x{ScreenHeight}";
         Window.AllowAltF4 = false;
         Window.AllowUserResizing = false;
 
@@ -46,17 +49,15 @@ class MyGame : Game
 
         graphics = new GraphicsDeviceManager(this)
         {
-            PreferredBackBufferWidth = screenWidth,
-            PreferredBackBufferHeight = screenHeight,
+            PreferredBackBufferWidth = ScreenWidth,
+            PreferredBackBufferHeight = ScreenHeight,
             IsFullScreen = false
         };
         graphics.ApplyChanges();
     }
 
-
-    protected override void LoadContent()
+    protected override void Initialize()
     {
-
 
         _peerServer = new PeerServer();
         _peerClient = new PeerCient();
@@ -65,15 +66,22 @@ class MyGame : Game
         _peerClient.Connect(port: 9000);
 
 
-        spriteBatch = new SpriteBatch(GraphicsDevice);
 
-        _cameraController = new CameraController();
+        // _cameraController = new CameraController();
 
         _clock = new ContinuousClock(0.1);
         _clock.Pause();
 
-        _sound = new Sound(Assets.SoundMouseClick) { volume = 0.5f };
 
+        base.Initialize();
+    }
+
+    protected override void LoadContent()
+    {
+
+        spriteBatch = new SpriteBatch(GraphicsDevice);
+
+        _soundMouseClick = new Sound(Assets.SoundMouseClick) { volume = 0.5f };
         _textureCardsBlackClubs = Texture2DAtlas.Create($"Atlas/{Assets.TextureCardsBlackClubs.Name}", Assets.TextureCardsBlackClubs, 88, 124, 13);
         // _textureCardsBlackSpades = Texture2DAtlas.Create("Atlas/TextureCardsBlackSpades", Assets.TextureCardsBlackSpades, 88, 124, 13);
         // _textureCardsRedDiamonds = Texture2DAtlas.Create("Atlas/TextureCardsRedDiamonds", Assets.TextureCardsRedDiamonds, 88, 124, 13);
@@ -87,14 +95,11 @@ class MyGame : Game
 
         // _cardList = list.Shuffle(Random.Shared);
 
-
-
-
-        _clock.Tick += (object sender, EventArgs e) =>
-        {
-            // _cardList = list.Shuffle(Random.Shared);
-            _regionIndex = Random.Shared.Next(0, 13);
-        };
+        // _clock.Tick += (object sender, EventArgs e) =>
+        // {
+        //     // _cardList = list.Shuffle(Random.Shared);
+        //     _regionIndex = Random.Shared.Next(0, 13);
+        // };
     }
 
     protected override void Update(GameTime gameTime)
@@ -104,7 +109,7 @@ class MyGame : Game
 
         if (mouse.WasButtonPressed(MouseButton.Left) && IsActive)
         {
-            _sound.Play();
+            _soundMouseClick.Play();
         }
 
         if (keyboard.WasKeyPressed(Keys.Escape))
@@ -120,14 +125,15 @@ class MyGame : Game
 
         if (keyboard.WasKeyPressed(Keys.M))
         {
-            if (_clock.State == TimerState.Paused)
-            {
-                _clock.Start();
-            }
-            else
-            {
-                _clock.Pause();
-            }
+            // if (_clock.State == TimerState.Paused)
+            // {
+            //     _clock.Start();
+            // }
+            // else
+            // {
+            //     _clock.Pause();
+            // }
+            _regionIndex = Random.Shared.Next(0, 13);
         }
 
 
@@ -138,17 +144,17 @@ class MyGame : Game
                 isDebug = !isDebug;
             }
 
-            if (keyboard.WasKeyPressed(Keys.S))
-            {
-                _cameraController.isShaking = !_cameraController.isShaking;
-            }
+            // if (keyboard.WasKeyPressed(Keys.S))
+            // {
+            //     _cameraController.isShaking = !_cameraController.isShaking;
+            // }
 
-            if (keyboard.WasKeyPressed(Keys.R))
-            {
-                _cameraController.resetCamera();
-            }
+            // if (keyboard.WasKeyPressed(Keys.R))
+            // {
+            //     _cameraController.resetCamera();
+            // }
 
-             if (keyboard.WasKeyPressed(Keys.F))
+            if (keyboard.WasKeyPressed(Keys.F))
             {
                 graphics.ToggleFullScreen();
             }
@@ -158,7 +164,7 @@ class MyGame : Game
 
 
         // updates
-        _cameraController.Update(gameTime);
+        // _cameraController.Update(gameTime);
         _clock.Update(gameTime);
 
         _peerServer.Update();
@@ -173,17 +179,27 @@ class MyGame : Game
     {
         GraphicsDevice.Clear(new Color(0, 128, 128, 100));
 
-        spriteBatch.Begin(transformMatrix: _cameraController.camera.GetViewMatrix(), blendState: BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
-
-        var card = new SpriteRegion(_textureCardsBlackClubs[_regionIndex]) { position = screenCenter, origin = Origin.center };
-        card.Draw(gameTime);
+        spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
 
-        if (isDebug)
-        {
-            spriteBatch.DrawPoint(screenCenter, debugColor, 4);
-        }
-        _cameraController.Draw(gameTime);
+
+
+        Card.Draw(gameTime);
+
+
+        Title.Draw(gameTime);
+
+
+        // if (isDebug)
+        // {
+        //     spriteBatch.DrawPoint(screenCenter, debugColor, 4);
+        // }
+
+        // _cameraController.Draw(gameTime);
+
+        // Print("123", "哈哈哈", 456, false);
+
+        // spriteBatch.DrawString(Assets.FontPuhuiti.GetFont(20))
 
         spriteBatch.End();
 

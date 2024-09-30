@@ -5,9 +5,9 @@ class Sound
     public float pitch = 0;
     public float volume = 1;
     public bool isLooped = false;
-    private SoundEffectInstance _soundEffectInstance;
+    private readonly SoundEffectInstance _soundEffectInstance;
 
-    private SoundEffect _soundEffect;
+    private readonly SoundEffect _soundEffect;
 
     public Sound(SoundEffect soundEffect)
     {

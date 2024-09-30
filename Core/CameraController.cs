@@ -9,7 +9,7 @@ class CameraController : Actor
 
     public static BoxingViewportAdapter viewportAdapter;
     public OrthographicCamera camera;
-    private OrthographicCamera originalCamera;
+    // private OrthographicCamera originalCamera;
 
     public bool isShaking = false;
 
@@ -17,9 +17,9 @@ class CameraController : Actor
     {
         var virtualWidth = 1920 / 4;
         var virtualHeight = 1080 / 4;
-        viewportAdapter = new BoxingViewportAdapter(window, graphics.GraphicsDevice, virtualWidth, virtualHeight);
+        viewportAdapter = new BoxingViewportAdapter(Window, Graphics.GraphicsDevice, virtualWidth, virtualHeight);
         camera = new OrthographicCamera(viewportAdapter) { MinimumZoom = 0.1f, MaximumZoom = 2f };
-        originalCamera = camera;
+        // originalCamera = camera;
     }
 
 
@@ -107,7 +107,7 @@ class CameraController : Actor
 
     }
 
-    public void resetCamera()
+    public static void resetCamera()
     {
 
     }
@@ -123,11 +123,15 @@ class CameraController : Actor
 
     public override void Draw(GameTime gameTime)
     {
-        if (isDebug)
+        if (IsDebug)
         {
-            spriteBatch.DrawRectangle(camera.BoundingRectangle, debugColor);
-            spriteBatch.DrawPoint(camera.Center, debugColor, 4);
+            SpriteBatch.DrawRectangle(camera.BoundingRectangle, DebugColor);
+            SpriteBatch.DrawPoint(camera.Center, DebugColor, 4);
         }
+    }
 
+    public override Vector2 GetSize()
+    {
+        return camera.BoundingRectangle.Size;
     }
 }

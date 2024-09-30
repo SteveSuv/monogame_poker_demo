@@ -3,8 +3,8 @@ using LiteNetLib.Utils;
 
 class PeerServer
 {
-    private NetManager _server;
-    private EventBasedNetListener _serverListener;
+    private readonly NetManager _server;
+    private readonly EventBasedNetListener _serverListener;
 
     public PeerServer()
     {
