@@ -6,11 +6,11 @@ static class AssetsLoader
 {
     public static Texture2D loadTexture2D(string path)
     {
-        return Texture2D.FromFile(MyGame.graphics.GraphicsDevice, path.Substring(1));
+        return Texture2D.FromStream(MyGame.graphics.GraphicsDevice, new FileStream(path.Substring(1), FileMode.Open));
     }
     public static SoundEffect loadSoundEffect(string path)
     {
-        return SoundEffect.FromFile(path.Substring(1));
+        return SoundEffect.FromStream(new FileStream(path.Substring(1), FileMode.Open));
     }
 
     public static FontSystem loadFont(string path)

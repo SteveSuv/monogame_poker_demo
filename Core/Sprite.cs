@@ -1,12 +1,11 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
-using MonoGame.Extended.Graphics;
 
 class Sprite : Actor
 {
 
-    public Texture2DRegion texture;
+    public Texture2D texture;
     public Vector2 position = Vector2.Zero;
     public Color color = Color.White;
     public float rotation = 0;
@@ -14,25 +13,28 @@ class Sprite : Actor
     public Vector2 scale = Vector2.One;
     public SpriteEffects effects = SpriteEffects.None;
     public float layerDepth = 0;
-    public SizeF size => new(texture.Width, texture.Height);
-    public RectangleF rectangle => new(position - origin * size, size);
+    public Vector2 size => new(texture.Width, texture.Height);
+    public RectangleF rectangle => new RectangleF(position - origin * size, size);
 
-    public Sprite(Texture2DRegion _texture)
+
+    public Sprite(Texture2D texture)
     {
-        texture = _texture;
-
+        this.texture = texture;
     }
+
     public override void Update(GameTime gameTime)
     {
 
     }
     public override void Draw(GameTime gameTime)
     {
-        spriteBatch.Draw(texture, position, color, rotation, origin * size, scale, effects, layerDepth);
+
+        spriteBatch.Draw(texture: texture, position: position, sourceRectangle: null, color: color, rotation: rotation, origin: origin * size, scale: scale, effects: effects, layerDepth: layerDepth);
 
         if (isDebug)
         {
             spriteBatch.DrawRectangle(rectangle, debugColor);
+            spriteBatch.DrawPoint(position: rectangle.Center, color: debugColor, size: 4);
         }
     }
 }

@@ -7,7 +7,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <AssemblyName>PokerGame</AssemblyName>
-    <ApplicationIcon>Assets/other/cover_256.ico</ApplicationIcon>
+    <ApplicationIcon>Assets/images/logo.ico</ApplicationIcon>
   </PropertyGroup>
 
 
