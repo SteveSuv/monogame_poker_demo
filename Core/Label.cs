@@ -15,7 +15,6 @@ class Label(string text) : Actor
     public override void Draw(GameTime gameTime)
     {
         SpriteBatch.DrawString(font: Font, text: text, position: position, color: color, rotation: rotation, origin: origin * Size, scale: scale, layerDepth: layerDepth, characterSpacing: characterSpacing, lineSpacing: lineSpacing, textStyle: textStyle, effect: effect, effectAmount: effectAmount);
-
         DrawDebug();
     }
 

@@ -27,18 +27,18 @@ class PeerServer
 
         _serverListener.PeerConnectedEvent += clientPeer =>
         {
-            Console.WriteLine("Server: Peer connected: " + clientPeer.Id);
+            Console.WriteLine($"Server: peer({clientPeer.Id}) connected");
         };
 
         _serverListener.PeerDisconnectedEvent += (clientPeer, disconnectInfo) =>
         {
-            Console.WriteLine("Server: Peer disconnected: " + clientPeer.Id);
+            Console.WriteLine($"Server: peer({clientPeer.Id}) disconnected");
         };
 
         _serverListener.NetworkReceiveEvent += (fromPeer, dataReader, channelNumber, deliveryMethod) =>
         {
             var message = dataReader.GetString();
-            Console.WriteLine($"Server: Received data from {fromPeer.Id}: {dataReader.GetString()}");
+            Console.WriteLine($"Server: received data from {fromPeer.Id}: {message}");
             SendMessageToAll(message);
         };
     }
@@ -46,7 +46,7 @@ class PeerServer
     public void Start(int port = 9000)
     {
         _server.Start(port); // 选择一个端口
-        Console.WriteLine("Server: Server started. Waiting for connections...");
+        Console.WriteLine($"Server: server port {port} started. Waiting for connections...");
     }
 
     public void Stop()

@@ -2,7 +2,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Graphics;
-using MonoGame.Extended;
 using MonoGame.Extended.Timers;
 using MonoGame.Extended.Input;
 using FontStashSharp;
@@ -65,12 +64,14 @@ class MyGame : Game
         _peerServer.Start(9000);
         _peerClient.Connect(port: 9000);
 
-
-
         // _cameraController = new CameraController();
 
         _clock = new ContinuousClock(0.1);
         _clock.Pause();
+
+        FontSystemDefaults.FontResolutionFactor = 2;
+        FontSystemDefaults.KernelWidth = 2;
+        FontSystemDefaults.KernelHeight = 2;
 
 
         base.Initialize();
@@ -82,16 +83,8 @@ class MyGame : Game
         spriteBatch = new SpriteBatch(GraphicsDevice);
 
         _soundMouseClick = new Sound(Assets.SoundMouseClick) { volume = 0.5f };
-        _textureCardsBlackClubs = Texture2DAtlas.Create($"Atlas/{Assets.TextureCardsBlackClubs.Name}", Assets.TextureCardsBlackClubs, 88, 124, 13);
-        // _textureCardsBlackSpades = Texture2DAtlas.Create("Atlas/TextureCardsBlackSpades", Assets.TextureCardsBlackSpades, 88, 124, 13);
-        // _textureCardsRedDiamonds = Texture2DAtlas.Create("Atlas/TextureCardsRedDiamonds", Assets.TextureCardsRedDiamonds, 88, 124, 13);
-        // _textureCardsRedHearts = Texture2DAtlas.Create("Atlas/TextureCardsRedHearts", Assets.TextureCardsRedHearts, 88, 124, 13);
-
-        // var list = new List<Texture2DRegion>();
-        // list.AddRange([.. _textureCardsBlackClubs]);
-        // list.AddRange([.. _textureCardsBlackSpades]);
-        // list.AddRange([.. _textureCardsRedDiamonds]);
-        // list.AddRange([.. _textureCardsRedHearts]);
+        var spriteAtlas = new SpriteAtlas(Assets.TextureCardsBlackClubs) { regionWidth = 88, regionHeight = 124, maxRegionCount = 13 };
+        _textureCardsBlackClubs = spriteAtlas.GetAtlas();
 
         // _cardList = list.Shuffle(Random.Shared);
 
@@ -116,7 +109,6 @@ class MyGame : Game
         {
             Exit();
         }
-
 
         if (keyboard.WasKeyPressed(Keys.L))
         {
@@ -181,14 +173,8 @@ class MyGame : Game
 
         spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-
-
-
         Card.Draw(gameTime);
-
-
         Title.Draw(gameTime);
-
 
         // if (isDebug)
         // {

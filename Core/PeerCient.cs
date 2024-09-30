@@ -16,19 +16,19 @@ class PeerCient
 
         _clientListener.PeerConnectedEvent += serverPeer =>
         {
-            Console.WriteLine("Client: Connected to server: " + serverPeer.Id);
+            Console.WriteLine($"Client: connected to server({serverPeer.Id})");
             _serverPeer = serverPeer;
         };
 
         _clientListener.PeerDisconnectedEvent += (serverPeer, disconnectInfo) =>
         {
-            Console.WriteLine("Client: Disconnected from server: " + serverPeer.Id);
+            Console.WriteLine($"Client: disconnected from server({serverPeer.Id})");
         };
 
         _clientListener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod, channel) =>
         {
             var message = dataReader.GetString();
-            Console.WriteLine($"Client: Received data from {fromPeer.Id}: {message}");
+            Console.WriteLine($"Client: received data from {fromPeer.Id}: {message}");
         };
     }
 
@@ -36,7 +36,7 @@ class PeerCient
     {
         _client.Start();
         _client.Connect(address, port, key);
-        Console.WriteLine("Client: Client Connect.");
+        Console.WriteLine($"Client: connecting to {address}:{port}");
     }
 
     public void Stop()
