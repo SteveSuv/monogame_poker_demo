@@ -5,6 +5,7 @@ using MonoGame.Extended.Graphics;
 using MonoGame.Extended.Timers;
 using MonoGame.Extended.Input;
 using FontStashSharp;
+using MonoGame.Extended;
 
 
 class MyGame : Game
@@ -24,17 +25,9 @@ class MyGame : Game
     private PeerCient _peerClient;
     private int _regionIndex = 0;
 
-    private static Label Title => new(DateTime.Now.ToLongTimeString()) { color = Color.Yellow, effect = FontSystemEffect.Stroked, fontSize = 50, position = ScreenCenter, origin = Origin.Center };
+    private Label _title;
 
-    private SpriteRegion Card => new(_textureCardsBlackClubs[_regionIndex]) { position = ScreenCenter, origin = Origin.Center };
-
-
-    public static void Print(params object[] values)
-    {
-        var result = string.Join(" ", values);
-        Console.WriteLine(result);
-    }
-
+    private SpriteRegion _card;
 
     public MyGame()
     {
@@ -82,9 +75,13 @@ class MyGame : Game
 
         spriteBatch = new SpriteBatch(GraphicsDevice);
 
-        _soundMouseClick = new Sound(Assets.SoundMouseClick) { volume = 0.5f };
+        _soundMouseClick = new Sound(Assets.SoundButtonClick) { volume = 0.5f };
         var spriteAtlas = new SpriteAtlas(Assets.TextureCardsBlackClubs) { regionWidth = 88, regionHeight = 124, maxRegionCount = 13 };
         _textureCardsBlackClubs = spriteAtlas.GetAtlas();
+
+        _card = new(_textureCardsBlackClubs[_regionIndex]) { position = ScreenCenter, origin = Origin.Center };
+
+        _title = new(DateTime.Now.ToLongTimeString()) { color = Color.Yellow, effect = FontSystemEffect.Stroked, fontSize = 50, position = ScreenCenter, origin = Origin.BottomRight };
 
         // _cardList = list.Shuffle(Random.Shared);
 
@@ -99,6 +96,10 @@ class MyGame : Game
     {
         var mouse = MouseExtended.GetState();
         var keyboard = KeyboardExtended.GetState();
+
+        // _title.rotation += gameTime.GetElapsedSeconds();
+        // _card.rotation += gameTime.GetElapsedSeconds();
+
 
         if (mouse.WasButtonPressed(MouseButton.Left) && IsActive)
         {
@@ -173,19 +174,8 @@ class MyGame : Game
 
         spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-        Card.Draw(gameTime);
-        Title.Draw(gameTime);
-
-        // if (isDebug)
-        // {
-        //     spriteBatch.DrawPoint(screenCenter, debugColor, 4);
-        // }
-
-        // _cameraController.Draw(gameTime);
-
-        // Print("123", "哈哈哈", 456, false);
-
-        // spriteBatch.DrawString(Assets.FontPuhuiti.GetFont(20))
+        _card.Draw(gameTime);
+        _title.Draw(gameTime);
 
         spriteBatch.End();
 

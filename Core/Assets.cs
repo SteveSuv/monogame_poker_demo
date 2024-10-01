@@ -5,17 +5,18 @@ using Microsoft.Xna.Framework.Graphics;
 static class Assets
 {
     // textures
-    public static Texture2D TextureCardsBlackClubs => AssetsLoader.LoadTexture2D("/Assets/images/Clubs-88x124.png");
-    public static Texture2D TextureCardsRedDiamonds => AssetsLoader.LoadTexture2D("/Assets/images/Diamonds-88x124.png");
-    public static Texture2D TextureCardsRedHearts => AssetsLoader.LoadTexture2D("/Assets/images/Hearts-88x124.png");
-    public static Texture2D TextureCardsBlackSpades => AssetsLoader.LoadTexture2D("/Assets/images/Spades-88x124.png");
-    public static Texture2D TextureChips => AssetsLoader.LoadTexture2D("/Assets/images/ChipsB_Flat-64x72.png");
+    public static Texture2D TextureLogo => AssetsLoader.LoadTexture2D("/Assets/Images/Logo.png");
+    public static Texture2D TextureCardsBlackClubs => AssetsLoader.LoadTexture2D("/Assets/Images/Clubs-88x124.png");
+    public static Texture2D TextureCardsRedDiamonds => AssetsLoader.LoadTexture2D("/Assets/Images/Diamonds-88x124.png");
+    public static Texture2D TextureCardsRedHearts => AssetsLoader.LoadTexture2D("/Assets/Images/Hearts-88x124.png");
+    public static Texture2D TextureCardsBlackSpades => AssetsLoader.LoadTexture2D("/Assets/Images/Spades-88x124.png");
+    public static Texture2D TextureChips => AssetsLoader.LoadTexture2D("/Assets/Images/ChipsB_Flat-64x72.png");
 
 
     // sounds
-    public static SoundEffect SoundMouseClick => AssetsLoader.LoadSoundEffect("/Assets/sounds/btn_click.wav");
-    public static SoundEffect SoundBGM => AssetsLoader.LoadSoundEffect("/Assets/sounds/menu.wav");
+    public static SoundEffect SoundButtonClick => AssetsLoader.LoadSoundEffect("/Assets/Sounds/ButtonClick.wav");
+    public static SoundEffect SoundBGM => AssetsLoader.LoadSoundEffect("/Assets/Sounds/BGM.wav");
 
     // fonts
-    public static FontSystem FontPuhuiti => AssetsLoader.LoadFont("/Assets/fonts/puhuiti.ttf");
+    public static FontSystem FontYuanTi => AssetsLoader.LoadFont("/Assets/Fonts/YuanTi.otf");
 }

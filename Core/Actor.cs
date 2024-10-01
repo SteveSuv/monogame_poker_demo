@@ -16,19 +16,23 @@ abstract class Actor
     public Vector2 position = Vector2.Zero;
     public Color color = Color.White;
     public float rotation = 0;
-    public Vector2 origin = Origin.LeftTop;
+    public Vector2 origin = Origin.TopLeft;
     public Vector2 scale = Vector2.One;
     public float layerDepth = 0;
     public Vector2 Size => GetSize();
-    public RectangleF Rectangle => new(position - origin * Size, Size);
+    public Vector2 OriginOffset => origin * Size;
+    public RectangleF Rectangle => new(position - OriginOffset, Size);
 
     public virtual void Update(GameTime gameTime) { }
 
-    public abstract void Draw(GameTime gameTime);
+    public virtual void Draw(GameTime gameTime)
+    {
+        DrawDebug();
+    }
 
     public abstract Vector2 GetSize();
 
-    public void DrawDebug()
+    private void DrawDebug()
     {
         if (IsDebug)
         {

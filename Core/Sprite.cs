@@ -8,8 +8,8 @@ class Sprite(Texture2D texture) : Actor
 
     public override void Draw(GameTime gameTime)
     {
-        SpriteBatch.Draw(texture: texture, position: position, sourceRectangle: null, color: color, rotation: rotation, origin: origin * Size, scale: scale, effects: effects, layerDepth: layerDepth);
-        DrawDebug();
+        SpriteBatch.Draw(texture: texture, position: position, sourceRectangle: null, color: color, rotation: rotation, origin: OriginOffset, scale: scale, effects: effects, layerDepth: layerDepth);
+        base.Draw(gameTime);
     }
 
     public override Vector2 GetSize()

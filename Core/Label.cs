@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 
 class Label(string text) : Actor
 {
-    public DynamicSpriteFont Font => Assets.FontPuhuiti.GetFont(fontSize);
+    public SpriteFontBase Font => Assets.FontYuanTi.GetFont(fontSize);
     public float fontSize = 20;
     public string text = text;
     public float characterSpacing = 0;
@@ -14,8 +14,8 @@ class Label(string text) : Actor
 
     public override void Draw(GameTime gameTime)
     {
-        SpriteBatch.DrawString(font: Font, text: text, position: position, color: color, rotation: rotation, origin: origin * Size, scale: scale, layerDepth: layerDepth, characterSpacing: characterSpacing, lineSpacing: lineSpacing, textStyle: textStyle, effect: effect, effectAmount: effectAmount);
-        DrawDebug();
+        SpriteBatch.DrawString(font: Font, text: text, position: position - OriginOffset / 2, color: color, rotation: rotation, origin: OriginOffset, scale: scale, layerDepth: layerDepth, characterSpacing: characterSpacing, lineSpacing: lineSpacing, textStyle: textStyle, effect: effect, effectAmount: effectAmount);
+        base.Draw(gameTime);
     }
 
     public override Vector2 GetSize()
