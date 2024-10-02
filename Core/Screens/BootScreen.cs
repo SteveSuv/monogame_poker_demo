@@ -1,11 +1,9 @@
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Screens;
-using MonoGame.Extended.Screens.Transitions;
 using MonoGame.Extended.Timers;
+
 class BootScreen(MyGame game) : GameScreen(game)
 {
-    private new MyGame Game => (MyGame)base.Game;
-
     private Label _title;
 
     private CountdownTimer _countdownTimer;
@@ -13,12 +11,12 @@ class BootScreen(MyGame game) : GameScreen(game)
     public override void LoadContent()
     {
         base.LoadContent();
-        _title = new Label("Tommy Games Production") { position = MyGame.ScreenCenter, origin = Origin.Center, fontSize = 70 };
+        _title = new Label("Tommy Games Production") { position = MyGame.ScreenCenter, origin = Origin.Center, fontSize = 60 };
         _countdownTimer = new CountdownTimer(3);
-        
+
         _countdownTimer.Completed += (object sender, EventArgs e) =>
         {
-            MyGame.screenManager.LoadScreen(new StartScreen(game), new FadeTransition(GraphicsDevice, Color.Black));
+            MyGame.LoadScreen(new StartScreen(game));
         };
     }
 
@@ -29,9 +27,9 @@ class BootScreen(MyGame game) : GameScreen(game)
 
     public override void Draw(GameTime gameTime)
     {
-        Game.GraphicsDevice.Clear(Color.Black);
-        MyGame.spriteBatch.Begin();
+        MyGame.GraphicsDevice.Clear(Color.Black);
+        MyGame.SpriteBatch.Begin();
         _title.Draw(gameTime);
-        MyGame.spriteBatch.End();
+        MyGame.SpriteBatch.End();
     }
 }
