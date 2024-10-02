@@ -4,15 +4,12 @@ using MonoGame.Extended.Timers;
 
 class BootScreen(MyGame game) : GameScreen(game)
 {
-    private Label _title;
-
-    private CountdownTimer _countdownTimer;
+    private readonly Label _title = new("Tommy Games Production") { position = MyGame.ScreenCenter, origin = Origin.Center, fontSize = 60 };
+    private readonly CountdownTimer _countdownTimer = new(2);
 
     public override void LoadContent()
     {
         base.LoadContent();
-        _title = new Label("Tommy Games Production") { position = MyGame.ScreenCenter, origin = Origin.Center, fontSize = 60 };
-        _countdownTimer = new CountdownTimer(3);
 
         _countdownTimer.Completed += (object sender, EventArgs e) =>
         {

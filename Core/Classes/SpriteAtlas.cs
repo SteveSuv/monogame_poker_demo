@@ -1,9 +1,9 @@
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Graphics;
 
-class SpriteAtlas
+class SpriteAtlas(Texture2D texture)
 {
-    public Texture2D texture;
+    public Texture2D texture = texture;
     public string Name => texture.Name;
     public required int regionWidth;
     public required int regionHeight;
@@ -11,13 +11,6 @@ class SpriteAtlas
     public int margin = 0;
     public int spacing = 0;
     private Texture2DAtlas Atlas;
-
-    public SpriteAtlas(Texture2D texture)
-    {
-        this.texture = texture;
-        Console.WriteLine(Name);
-
-    }
 
     public Texture2DAtlas GetAtlas()
     {

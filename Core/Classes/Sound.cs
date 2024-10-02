@@ -6,7 +6,6 @@ class Sound
     public float volume = 1;
     public bool isLooped = false;
     private readonly SoundEffectInstance _soundEffectInstance;
-
     private readonly SoundEffect _soundEffect;
 
     public Sound(SoundEffect soundEffect)
@@ -15,7 +14,7 @@ class Sound
         _soundEffectInstance = _soundEffect.CreateInstance();
     }
 
-    private void updateInstance()
+    private void UpdateInstance()
     {
         _soundEffectInstance.Pitch = pitch;
         _soundEffectInstance.Volume = volume;
@@ -24,26 +23,26 @@ class Sound
 
     public void Play()
     {
-        updateInstance();
+        UpdateInstance();
         _soundEffectInstance.Stop();
         _soundEffectInstance.Play();
     }
 
     public void Stop()
     {
-        updateInstance();
+        UpdateInstance();
         _soundEffectInstance.Stop();
     }
 
     public void Pause()
     {
-        updateInstance();
+        UpdateInstance();
         _soundEffectInstance.Pause();
     }
 
     public void Resume()
     {
-        updateInstance();
+        UpdateInstance();
         _soundEffectInstance.Resume();
     }
 }

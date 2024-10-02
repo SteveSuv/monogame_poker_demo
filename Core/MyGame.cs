@@ -12,23 +12,19 @@ class MyGame : Game
     public static new GraphicsDevice GraphicsDevice => Graphics.GraphicsDevice;
     public static SpriteBatch SpriteBatch;
     public static new GameWindow Window;
+    public static MouseStateExtended MouseState => MouseExtended.GetState();
+    public static KeyboardStateExtended KeyboardState => KeyboardExtended.GetState();
+    public static Rectangle MouseRectangle => new(MouseState.Position, new Point(1));
     public static bool IsDebug = false;
-    public static int ScreenWidth => 1920 / 2;
-    public static int ScreenHeight => 1080 / 2;
-    public static Color DebugColor => Color.Red;
-    public static Vector2 ScreenCenter => new(ScreenWidth / 2, ScreenHeight / 2);
-    public static ScreenManager ScreenManager;
-    // private Texture2DAtlas _textureCardsBlackClubs;
-    // private ContinuousClock _clock;
-    private Sound _soundMouseClick;
+    public static new bool IsActive = false;
+    public static readonly int ScreenWidth = 1920 / 2;
+    public static readonly int ScreenHeight = 1080 / 2;
+    public static readonly Color DebugColor = Color.Red;
+    public static readonly Vector2 ScreenCenter = new(ScreenWidth / 2, ScreenHeight / 2);
+    public static readonly ScreenManager ScreenManager = new();
+    public static readonly NetworkManager NetworkManager = new();
+
     private Sound _soundBGM;
-    private PeerServer _peerServer;
-    private PeerCient _peerClient;
-
-    // private int _regionIndex = 0;
-    // private Label _title;
-    // private SpriteRegion _card;
-
 
 
     public MyGame()
@@ -49,115 +45,62 @@ class MyGame : Game
         };
         Graphics.ApplyChanges();
 
-        ScreenManager = new ScreenManager();
         Components.Add(ScreenManager);
     }
 
     protected override void Initialize()
     {
-
-
-
-        _peerServer = new PeerServer();
-        _peerClient = new PeerCient();
-
-        _peerServer.Start(port: 9000);
-        _peerClient.Connect(port: 9000);
-
-        // _cameraController = new CameraController();
-        // _clock = new ContinuousClock(0.1);
-        // _clock.Pause();
-
-        FontSystemDefaults.FontResolutionFactor = 2;
-        FontSystemDefaults.KernelWidth = 2;
-        FontSystemDefaults.KernelHeight = 2;
-
-
         base.Initialize();
-
         LoadScreen(new BootScreen(this));
     }
 
     protected override void LoadContent()
     {
+        FontSystemDefaults.FontResolutionFactor = 2;
+        FontSystemDefaults.KernelWidth = 2;
+        FontSystemDefaults.KernelHeight = 2;
 
-        SpriteBatch = new SpriteBatch(base.GraphicsDevice);
-
-        _soundMouseClick = new Sound(Assets.SoundButtonClick) { volume = 0.8f };
-        _soundBGM = new Sound(Assets.SoundBGM) { volume = 0.8f };
+        SpriteBatch = new(base.GraphicsDevice);
+        _soundBGM = new(Assets.SoundBGM) { volume = 0.8f };
         _soundBGM.Play();
-
-        // var spriteAtlas = new SpriteAtlas(Assets.TextureCardsBlackClubs) { regionWidth = 88, regionHeight = 124, maxRegionCount = 13 };
-        // _textureCardsBlackClubs = spriteAtlas.GetAtlas();
-
-        // _card = new(_textureCardsBlackClubs[_regionIndex]) { position = ScreenCenter, origin = Origin.Center };
-
-        // _title = new(DateTime.Now.ToLongTimeString()) { color = Color.Yellow, effect = FontSystemEffect.Stroked, fontSize = 50, position = ScreenCenter, origin = Origin.BottomRight };
-
-        // _cardList = list.Shuffle(Random.Shared);
-
-        // _clock.Tick += (object sender, EventArgs e) =>
-        // {
-        //     // _cardList = list.Shuffle(Random.Shared);
-        //     _regionIndex = Random.Shared.Next(0, 13);
-        // };
     }
 
     protected override void Update(GameTime gameTime)
     {
+        NetworkManager.Update(gameTime);
+        MouseExtended.Update();
+        KeyboardExtended.Update();
+        IsActive = base.IsActive;
 
-
-        var mouse = MouseExtended.GetState();
-        var keyboard = KeyboardExtended.GetState();
-
-        if (keyboard.WasKeyPressed(Keys.C))
-        {
-            LoadScreen(new StartScreen(this));
-        }
-
-        if (keyboard.WasKeyPressed(Keys.V))
-        {
-            LoadScreen(new BootScreen(this));
-        }
-
-        if (mouse.WasButtonPressed(MouseButton.Left) && IsActive)
-        {
-            _soundMouseClick.Play();
-        }
-
-        if (keyboard.WasKeyPressed(Keys.Escape))
+        if (KeyboardState.WasKeyPressed(Keys.Escape))
         {
             Exit();
         }
 
-        if (keyboard.WasKeyPressed(Keys.L))
+        if (KeyboardState.WasKeyPressed(Keys.C))
         {
-            _peerClient.SendMessageToAll("hello1");
+            LoadScreen(new StartScreen(this));
+        }
+        if (KeyboardState.WasKeyPressed(Keys.V))
+        {
+            LoadScreen(new BootScreen(this));
         }
 
 
-        if (keyboard.IsControlDown())
+        if (KeyboardState.IsControlDown())
         {
-            if (keyboard.WasKeyPressed(Keys.D))
+            if (KeyboardState.WasKeyPressed(Keys.D))
             {
                 IsDebug = !IsDebug;
             }
 
 
-            if (keyboard.WasKeyPressed(Keys.F))
+            if (KeyboardState.WasKeyPressed(Keys.F))
             {
                 Graphics.ToggleFullScreen();
             }
-
         }
 
-
-
-        _peerServer.Update();
-        _peerClient.Update();
-
-        MouseExtended.Update();
-        KeyboardExtended.Update();
         base.Update(gameTime);
     }
 
@@ -171,4 +114,5 @@ class MyGame : Game
     {
         ScreenManager.LoadScreen(screen, new FadeTransition(GraphicsDevice, Color.Black, duration));
     }
+
 }

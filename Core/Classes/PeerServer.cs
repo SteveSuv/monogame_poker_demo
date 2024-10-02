@@ -5,6 +5,7 @@ class PeerServer
 {
     private readonly NetManager _server;
     private readonly EventBasedNetListener _serverListener;
+    public static int MaxConnectedPeersCount = 4;
 
     public PeerServer()
     {
@@ -14,7 +15,7 @@ class PeerServer
 
         _serverListener.ConnectionRequestEvent += request =>
         {
-            if (_server.ConnectedPeersCount < 4)
+            if (_server.ConnectedPeersCount < MaxConnectedPeersCount)
             {
                 request.AcceptIfKey("test");
             }

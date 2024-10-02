@@ -6,24 +6,19 @@ using MonoGame.Extended.ViewportAdapters;
 
 class CameraController : Actor
 {
-
     public static BoxingViewportAdapter viewportAdapter;
     public OrthographicCamera camera;
-    // private OrthographicCamera originalCamera;
 
     public bool isShaking = false;
 
-    public CameraController()
+    public CameraController(int virtualWidth = 1920, int virtualHeight = 1080)
     {
-        var virtualWidth = 1920 / 4;
-        var virtualHeight = 1080 / 4;
         viewportAdapter = new BoxingViewportAdapter(MyGame.Window, MyGame.GraphicsDevice, virtualWidth, virtualHeight);
         camera = new OrthographicCamera(viewportAdapter) { MinimumZoom = 0.1f, MaximumZoom = 2f };
-        // originalCamera = camera;
     }
 
 
-    void MoveCamera(GameTime gameTime)
+    private void MoveCamera(GameTime gameTime)
     {
         var dir = Vector2.Zero;
         var keyboard = KeyboardExtended.GetState();
@@ -49,7 +44,7 @@ class CameraController : Actor
         camera.Move(dir * speed * gameTime.GetElapsedSeconds());
 
     }
-    void ZoomCamera(GameTime gameTime)
+    private void ZoomCamera(GameTime gameTime)
     {
         var mouse = MouseExtended.GetState();
         var keyboard = KeyboardExtended.GetState();
@@ -66,7 +61,7 @@ class CameraController : Actor
 
         }
     }
-    void RotateCamera(GameTime gameTime)
+    private void RotateCamera(GameTime gameTime)
     {
         var keyboard = KeyboardExtended.GetState();
         var speed = keyboard.IsShiftDown() ? 5 : 1;
@@ -80,7 +75,7 @@ class CameraController : Actor
             camera.Rotate(-speed * gameTime.GetElapsedSeconds());
         }
     }
-    void PitchCamera(GameTime gameTime)
+    private void PitchCamera(GameTime gameTime)
     {
         var keyboard = KeyboardExtended.GetState();
         var isShiftDown = keyboard.IsShiftDown();
@@ -96,18 +91,17 @@ class CameraController : Actor
         }
     }
 
-    void shakeCamera(GameTime gameTime)
+    private void ShakeCamera(GameTime gameTime)
     {
         if (isShaking)
         {
-            Vector2 vec2;
-            Random.Shared.NextUnitVector(out vec2);
+            Random.Shared.NextUnitVector(out Vector2 vec2);
             camera.Move(vec2);
         }
 
     }
 
-    public static void resetCamera()
+    public static void ResetCamera()
     {
 
     }
@@ -118,7 +112,7 @@ class CameraController : Actor
         ZoomCamera(gameTime);
         RotateCamera(gameTime);
         PitchCamera(gameTime);
-        shakeCamera(gameTime);
+        ShakeCamera(gameTime);
     }
 
     public override void Draw(GameTime gameTime)

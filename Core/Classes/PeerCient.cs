@@ -7,7 +7,6 @@ class PeerCient
     private readonly EventBasedNetListener _clientListener;
     private NetPeer _serverPeer;
 
-
     public PeerCient()
     {
         _clientListener = new EventBasedNetListener();
