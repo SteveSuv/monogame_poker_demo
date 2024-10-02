@@ -1,33 +1,33 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MonoGame.Extended.Graphics;
-using MonoGame.Extended.Timers;
 using MonoGame.Extended.Input;
 using FontStashSharp;
-using MonoGame.Extended;
-
+using MonoGame.Extended.Screens;
+using MonoGame.Extended.Screens.Transitions;
 
 class MyGame : Game
 {
     public static GraphicsDeviceManager graphics;
     public static SpriteBatch spriteBatch;
     public static GameWindow window;
-    public static bool isDebug = true;
+    public static bool isDebug = false;
     public static int ScreenWidth => 1920 / 2;
     public static int ScreenHeight => 1080 / 2;
     public static Color DebugColor => Color.Red;
     public static Vector2 ScreenCenter => new(ScreenWidth / 2, ScreenHeight / 2);
-    private Texture2DAtlas _textureCardsBlackClubs;
-    private ContinuousClock _clock;
+    public static ScreenManager screenManager;
+    // private Texture2DAtlas _textureCardsBlackClubs;
+    // private ContinuousClock _clock;
     private Sound _soundMouseClick;
+    private Sound _soundBGM;
     private PeerServer _peerServer;
     private PeerCient _peerClient;
-    private int _regionIndex = 0;
+    // private int _regionIndex = 0;
 
-    private Label _title;
+    // private Label _title;
 
-    private SpriteRegion _card;
+    // private SpriteRegion _card;
 
     public MyGame()
     {
@@ -46,6 +46,9 @@ class MyGame : Game
             IsFullScreen = false
         };
         graphics.ApplyChanges();
+
+        screenManager = new ScreenManager();
+        Components.Add(screenManager);
     }
 
     protected override void Initialize()
@@ -59,8 +62,8 @@ class MyGame : Game
 
         // _cameraController = new CameraController();
 
-        _clock = new ContinuousClock(0.1);
-        _clock.Pause();
+        // _clock = new ContinuousClock(0.1);
+        // _clock.Pause();
 
         FontSystemDefaults.FontResolutionFactor = 2;
         FontSystemDefaults.KernelWidth = 2;
@@ -68,20 +71,23 @@ class MyGame : Game
 
 
         base.Initialize();
+        LoadBootScreen();
     }
 
     protected override void LoadContent()
     {
 
         spriteBatch = new SpriteBatch(GraphicsDevice);
+        _soundMouseClick = new Sound(Assets.SoundButtonClick) { volume = 0.8f };
+        _soundBGM = new Sound(Assets.SoundBGM) { volume = 0.8f };
+        _soundBGM.Play();
 
-        _soundMouseClick = new Sound(Assets.SoundButtonClick) { volume = 0.5f };
-        var spriteAtlas = new SpriteAtlas(Assets.TextureCardsBlackClubs) { regionWidth = 88, regionHeight = 124, maxRegionCount = 13 };
-        _textureCardsBlackClubs = spriteAtlas.GetAtlas();
+        // var spriteAtlas = new SpriteAtlas(Assets.TextureCardsBlackClubs) { regionWidth = 88, regionHeight = 124, maxRegionCount = 13 };
+        // _textureCardsBlackClubs = spriteAtlas.GetAtlas();
 
-        _card = new(_textureCardsBlackClubs[_regionIndex]) { position = ScreenCenter, origin = Origin.Center };
+        // _card = new(_textureCardsBlackClubs[_regionIndex]) { position = ScreenCenter, origin = Origin.Center };
 
-        _title = new(DateTime.Now.ToLongTimeString()) { color = Color.Yellow, effect = FontSystemEffect.Stroked, fontSize = 50, position = ScreenCenter, origin = Origin.BottomRight };
+        // _title = new(DateTime.Now.ToLongTimeString()) { color = Color.Yellow, effect = FontSystemEffect.Stroked, fontSize = 50, position = ScreenCenter, origin = Origin.BottomRight };
 
         // _cardList = list.Shuffle(Random.Shared);
 
@@ -96,6 +102,15 @@ class MyGame : Game
     {
         var mouse = MouseExtended.GetState();
         var keyboard = KeyboardExtended.GetState();
+
+        if (keyboard.WasKeyPressed(Keys.C))
+        {
+            LoadStartScreen();
+        }
+        else if (keyboard.WasKeyPressed(Keys.V))
+        {
+            LoadBootScreen();
+        }
 
         // _title.rotation += gameTime.GetElapsedSeconds();
         // _card.rotation += gameTime.GetElapsedSeconds();
@@ -126,7 +141,7 @@ class MyGame : Game
             // {
             //     _clock.Pause();
             // }
-            _regionIndex = Random.Shared.Next(0, 13);
+            // _regionIndex = Random.Shared.Next(0, 13);
         }
 
 
@@ -158,7 +173,7 @@ class MyGame : Game
 
         // updates
         // _cameraController.Update(gameTime);
-        _clock.Update(gameTime);
+        // _clock.Update(gameTime);
 
         _peerServer.Update();
         _peerClient.Update();
@@ -170,15 +185,25 @@ class MyGame : Game
 
     protected override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.Clear(new Color(0, 128, 128, 100));
+        // GraphicsDevice.Clear(new Color(0, 128, 128, 100));
 
-        spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+        // spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-        _card.Draw(gameTime);
-        _title.Draw(gameTime);
+        // _card.Draw(gameTime);
+        // _title.Draw(gameTime);
 
-        spriteBatch.End();
+        // spriteBatch.End();
 
         base.Draw(gameTime);
+    }
+
+    private void LoadBootScreen()
+    {
+        screenManager.LoadScreen(new BootScreen(this), new FadeTransition(GraphicsDevice, Color.Black));
+    }
+
+    private void LoadStartScreen()
+    {
+        screenManager.LoadScreen(new StartScreen(this), new FadeTransition(GraphicsDevice, Color.Black));
     }
 }
