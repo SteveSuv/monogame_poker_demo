@@ -36,12 +36,13 @@ class MyGame : Game
         Window = base.Window;
 
         IsMouseVisible = true;
-
+        
+    
         Graphics = new GraphicsDeviceManager(this)
         {
             PreferredBackBufferWidth = ScreenWidth,
             PreferredBackBufferHeight = ScreenHeight,
-            IsFullScreen = false
+            IsFullScreen = false,
         };
         Graphics.ApplyChanges();
 
@@ -51,7 +52,7 @@ class MyGame : Game
     protected override void Initialize()
     {
         base.Initialize();
-        LoadScreen(new BootScreen(this));
+        LoadScreen(new StartScreen(this));
     }
 
     protected override void LoadContent()

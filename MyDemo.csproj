@@ -10,7 +10,6 @@
     <ApplicationIcon>Assets/Images/Logo.ico</ApplicationIcon>
   </PropertyGroup>
 
-
   <ItemGroup>
     <PackageReference Include="FontStashSharp.MonoGame" Version="*" />
     <PackageReference Include="LiteNetLib" Version="*" />
@@ -20,5 +19,6 @@
 
   <ItemGroup>
     <None Update="Assets/**/*" CopyToOutputDirectory="PreserveNewest" />
+    <EmbeddedResource Include="Assets/Images/Logo.ico" LogicalName="Icon.bmp" />
   </ItemGroup>
 </Project>

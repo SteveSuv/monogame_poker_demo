@@ -8,7 +8,7 @@ class StartScreen(MyGame game) : GameScreen(game)
 
     private readonly Sprite _logo = new(Assets.TextureLogo) { position = MyGame.ScreenCenter + new Vector2(-100, -120), origin = Origin.Center, scale = new Vector2(0.3f), color = Color.Black };
     private readonly Label _title = new("二十一点") { position = MyGame.ScreenCenter + new Vector2(0, 200), origin = Origin.Center, fontSize = 40, color = Color.Black };
-    private readonly Button _createServerButton = new() { position = MyGame.ScreenCenter + new Vector2(0, 100), origin = Origin.Center };
+    private readonly Button _createServerButton = new() { position = MyGame.ScreenCenter + new Vector2(0, 100), origin = Origin.Center, label = new("ClickMe") };
     private readonly Tweener _logoTweener = new();
     private readonly Tweener _titleTweener = new();
     public override void LoadContent()
