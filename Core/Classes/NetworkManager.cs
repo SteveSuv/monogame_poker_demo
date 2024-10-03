@@ -1,3 +1,4 @@
+using LiteNetLib;
 using Microsoft.Xna.Framework;
 
 class NetworkManager
@@ -6,6 +7,8 @@ class NetworkManager
     private readonly PeerCient client = new();
     public int port = 9000;
     public bool isHost = false;
+    public List<NetPeer> ConnectedPeerList => server.ConnectedPeerList;
+
 
     public void Update(GameTime gameTime)
     {
@@ -28,6 +31,11 @@ class NetworkManager
     public void ConnectServer(string address = "localhost")
     {
         client.Connect(address: address, port: port);
+    }
+
+    public void StopClient()
+    {
+        client.Stop();
     }
 
     public void SyncMessage(string message)

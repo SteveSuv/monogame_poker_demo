@@ -19,10 +19,12 @@ class Button() : Actor
     private bool isHover = false;
     public EventHandler Hover;
     public EventHandler Click;
-    public Sound hoverSound = new(Assets.SoundButtonHover) { volume = 0.8f };
-    public Sound clickSound = new(Assets.SoundButtonClick) { volume = 0.8f };
+    private readonly Sound hoverSound = new(Assets.SoundButtonHover) { volume = 0.8f };
+    private readonly Sound clickSound = new(Assets.SoundButtonClick) { volume = 0.8f };
     public Color hoverColor = new(200, 200, 200);
     public Color ClickColor = new(200, 200, 200);
+    public Vector2 padding = new(40, 20);
+    public Vector2? size = null;
 
     public override void Update(GameTime gameTime)
     {
@@ -62,6 +64,7 @@ class Button() : Actor
 
     public override Vector2 GetSize()
     {
-        return new(100, 50);
+        if (size != null) return (Vector2)size;
+        return FinalLabel.Size + padding;
     }
 }

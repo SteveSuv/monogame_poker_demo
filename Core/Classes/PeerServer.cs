@@ -7,6 +7,8 @@ class PeerServer
     private readonly EventBasedNetListener _serverListener;
     public static int MaxConnectedPeersCount = 4;
 
+    public List<NetPeer> ConnectedPeerList => _server.ConnectedPeerList;
+
     public PeerServer()
     {
         _serverListener = new EventBasedNetListener();
@@ -65,5 +67,10 @@ class PeerServer
         var writer = new NetDataWriter();
         writer.Put(message);
         _server.SendToAll(writer, DeliveryMethod.ReliableOrdered);
+    }
+
+    public List<NetPeer> GetConnectedPeerList()
+    {
+        return _server.ConnectedPeerList;
     }
 }
