@@ -2,20 +2,8 @@ using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Input;
 
-class Button() : Actor
+class ButtonNode : Node
 {
-    public required Label label;
-    private Label FinalLabel
-    {
-        get
-        {
-            label.position = position;
-            label.origin = Origin.Center;
-            label.color = Color.Black;
-            return label;
-        }
-    }
-    public float Thickness => Size.Y / 2;
     private bool isHover = false;
     public EventHandler Hover;
     public EventHandler Click;
@@ -23,19 +11,20 @@ class Button() : Actor
     private readonly Sound clickSound = new(Assets.SoundButtonClick) { volume = 0.8f };
     public Color hoverColor = new(200, 200, 200);
     public Color ClickColor = new(200, 200, 200);
-    public Vector2 padding = new(40, 20);
-    public Vector2? size = null;
+    public Vector2 size = new(100, 50);
+    public float Thickness => size.Y / 2;
+    public Vector2 OriginOffset => transform.origin * size;
+    public RectangleF Rectangle => new(transform.worldPosition - OriginOffset, size);
 
     public override void Update(GameTime gameTime)
     {
-        FinalLabel.Update(gameTime);
 
         if (Rectangle.Intersects(MyGame.MouseRectangle))
         {
             if (!isHover)
             {
                 hoverSound.Play();
-                color = hoverColor;
+                transform.color = hoverColor;
                 Hover?.Invoke(this, null);
                 isHover = true;
             }
@@ -43,7 +32,7 @@ class Button() : Actor
             if (MyGame.MouseState.WasButtonPressed(MouseButton.Left) && MyGame.IsActive)
             {
                 clickSound.Play();
-                color = ClickColor;
+                transform.color = ClickColor;
                 Click?.Invoke(this, null);
             }
 
@@ -51,20 +40,15 @@ class Button() : Actor
         else
         {
             isHover = false;
-            color = Color.White;
+            transform.color = Color.White;
         }
+
+        base.Update(gameTime);
     }
 
-    public override void Draw(GameTime gameTime)
+    public override void Draw()
     {
-        MyGame.SpriteBatch.DrawRectangle(rectangle: Rectangle, color: color, thickness: Thickness, layerDepth: layerDepth);
-        FinalLabel.Draw(gameTime);
-        base.Draw(gameTime);
-    }
-
-    public override Vector2 GetSize()
-    {
-        if (size != null) return (Vector2)size;
-        return FinalLabel.Size + padding;
+        MyGame.SpriteBatch.DrawRectangle(rectangle: Rectangle, color: transform.color, thickness: Thickness, layerDepth: transform.layerDepth);
+        base.Draw();
     }
 }

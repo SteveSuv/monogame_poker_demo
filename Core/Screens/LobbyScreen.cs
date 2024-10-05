@@ -15,17 +15,28 @@ class LobbyScreen(MyGame game) : GameScreen(game)
                              .FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork)
                              ?.ToString();
 
-    private Label _title => new($"{computerName}创建的房间  {ipv4Address}:9000") { };
-    private readonly Button _backButton = new() { label = new("返回"), position = new(MyGame.ScreenWidth, 0), origin = Origin.Center };
+    private Node world = new()
+    {
+        transform = { localPosition = MyGame.ScreenCenter },
+        children = [
+            // {computerName}创建的房间  {ipv4Address}:9000
+                new LabelNode() { text = $"房间", fontSize = 40 },
+            new ButtonNode()
+            {
+                tag = "Back",
+                transform = { localPosition = new(0, 100) },
+                children = [
+                    new LabelNode() { text = "返回", transform = { color = Color.Black } }
+                ]
+            }
+                ]
+    };
 
+    private ButtonNode _backButton => world.GetChildByTag<ButtonNode>("Back");
 
     public override void LoadContent()
     {
         base.LoadContent();
-        _backButton.position.X = MyGame.ScreenWidth - _backButton.Size.X / 2 - 20;
-        _backButton.position.Y = _backButton.Size.Y / 2;
-        _title.position.Y = _backButton.Size.Y / 2;
-        _title.position.X = _title.position.X + 20;
 
         _backButton.Click += (object sender, EventArgs e) =>
         {
@@ -42,16 +53,14 @@ class LobbyScreen(MyGame game) : GameScreen(game)
 
     public override void Update(GameTime gameTime)
     {
-        _title.Update(gameTime);
-        _backButton.Update(gameTime);
+        world.Update(gameTime);
     }
 
     public override void Draw(GameTime gameTime)
     {
         MyGame.GraphicsDevice.Clear(Color.Black);
         MyGame.SpriteBatch.Begin();
-        _title.Draw(gameTime);
-        _backButton.Draw(gameTime);
+        world.Draw();
         MyGame.SpriteBatch.End();
     }
 }

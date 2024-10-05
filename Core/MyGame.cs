@@ -1,8 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Input;
-using FontStashSharp;
 using MonoGame.Extended.Screens;
 using MonoGame.Extended.Screens.Transitions;
 
@@ -26,7 +24,6 @@ class MyGame : Game
 
     private Sound _soundBGM;
 
-
     public MyGame()
     {
         base.Window.Title = $"PokerGame1 {ScreenWidth}x{ScreenHeight}";
@@ -36,8 +33,7 @@ class MyGame : Game
         Window = base.Window;
 
         IsMouseVisible = true;
-        
-    
+
         Graphics = new GraphicsDeviceManager(this)
         {
             PreferredBackBufferWidth = ScreenWidth,
@@ -45,24 +41,25 @@ class MyGame : Game
             IsFullScreen = false,
         };
         Graphics.ApplyChanges();
-
         Components.Add(ScreenManager);
     }
 
     protected override void Initialize()
     {
         base.Initialize();
-        LoadScreen(new StartScreen(this));
+        LoadScreen(new BootScreen(this));
     }
 
     protected override void LoadContent()
     {
-        FontSystemDefaults.FontResolutionFactor = 2;
-        FontSystemDefaults.KernelWidth = 2;
-        FontSystemDefaults.KernelHeight = 2;
+        SpriteBatch = new(base.GraphicsDevice);
+
+        // FontSystemDefaults.FontResolutionFactor = 2;
+        // FontSystemDefaults.KernelWidth = 2;
+        // FontSystemDefaults.KernelHeight = 2;
 
         SpriteBatch = new(base.GraphicsDevice);
-        _soundBGM = new(Assets.SoundBGM) { volume = 0.8f };
+        _soundBGM = new(Assets.SoundBGM) { volume = 0.5f };
         _soundBGM.Play();
     }
 
@@ -72,36 +69,6 @@ class MyGame : Game
         MouseExtended.Update();
         KeyboardExtended.Update();
         IsActive = base.IsActive;
-
-        if (KeyboardState.WasKeyPressed(Keys.Escape))
-        {
-            Exit();
-        }
-
-        if (KeyboardState.WasKeyPressed(Keys.C))
-        {
-            LoadScreen(new StartScreen(this));
-        }
-        if (KeyboardState.WasKeyPressed(Keys.V))
-        {
-            LoadScreen(new BootScreen(this));
-        }
-
-
-        if (KeyboardState.IsControlDown())
-        {
-            if (KeyboardState.WasKeyPressed(Keys.D))
-            {
-                IsDebug = !IsDebug;
-            }
-
-
-            if (KeyboardState.WasKeyPressed(Keys.F))
-            {
-                Graphics.ToggleFullScreen();
-            }
-        }
-
         base.Update(gameTime);
     }
 
@@ -115,5 +82,4 @@ class MyGame : Game
     {
         ScreenManager.LoadScreen(screen, new FadeTransition(GraphicsDevice, Color.Black, duration));
     }
-
 }

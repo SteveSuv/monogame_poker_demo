@@ -4,7 +4,13 @@ using MonoGame.Extended.Timers;
 
 class BootScreen(MyGame game) : GameScreen(game)
 {
-    private readonly Label _title = new("Tommy Games Production") { position = MyGame.ScreenCenter, origin = Origin.Center, fontSize = 60 };
+    private Node world = new()
+    {
+        transform = { localPosition = MyGame.ScreenCenter },
+        children = [
+            new LabelNode() { text = "Tommy Games Production", fontSize = 60 }
+        ]
+    };
     private readonly CountdownTimer _countdownTimer = new(2);
 
     public override void LoadContent()
@@ -20,13 +26,14 @@ class BootScreen(MyGame game) : GameScreen(game)
     public override void Update(GameTime gameTime)
     {
         _countdownTimer.Update(gameTime);
+        world.Update(gameTime);
     }
 
     public override void Draw(GameTime gameTime)
     {
         MyGame.GraphicsDevice.Clear(Color.Black);
         MyGame.SpriteBatch.Begin();
-        _title.Draw(gameTime);
+        world.Draw();
         MyGame.SpriteBatch.End();
     }
 }
