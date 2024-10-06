@@ -6,7 +6,6 @@ class PeerServer
     public readonly NetManager _server;
     public readonly EventBasedNetListener _serverListener;
     public static int MaxConnectedPeersCount = 4;
-
     public List<NetPeer> ConnectedPeerList => _server.ConnectedPeerList;
 
     public PeerServer()
@@ -31,6 +30,8 @@ class PeerServer
         _serverListener.PeerConnectedEvent += clientPeer =>
         {
             Console.WriteLine($"Server: peer({clientPeer.Id}) connected");
+            Console.WriteLine(_server.ConnectedPeerList.Count);
+            SendMessageToAll(_server.ConnectedPeerList.Count.ToString());
         };
 
         _serverListener.PeerDisconnectedEvent += (clientPeer, disconnectInfo) =>

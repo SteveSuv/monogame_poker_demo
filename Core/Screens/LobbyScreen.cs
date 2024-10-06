@@ -47,6 +47,8 @@ class LobbyScreen(MyGame game) : GameScreen(game)
 
         world.AddChild(_backButton);
 
+        world.AddChild(new Node(){tag="Clients"});
+
 
 
     }
@@ -55,13 +57,18 @@ class LobbyScreen(MyGame game) : GameScreen(game)
     {
 
 
-        // var list = MyGame.NetworkManager.ConnectedPeerList;
+        var clientsNode=world.GetChildByTag<Node>("Clients");
+        clientsNode.RemoveAllChildren();
 
-        // for (int i = 0; i < list.Count; i++)
-        // {
-        //     var item = list[i];
-        //     world.AddChild(new LabelNode() { text = $"PeerID: {item.Id}", fontSize = 30, transform = { localPosition = new(0, 100 + i * 20) } });
-        // }
+        var list = MyGame.NetworkManager.ConnectedPeerList;
+
+        // Console.WriteLine(string.Join(", ",list.Select(a => a.Id).ToList()));
+
+        for (int i = 0; i < list.Count; i++)
+        {
+            var item = list[i];
+            clientsNode.AddChild(new LabelNode() { text = $"PeerID: {item.Id}", fontSize = 30, transform = { localPosition = new(0, 100 + i * 20) } });
+        }
         
 
         // 应该更新

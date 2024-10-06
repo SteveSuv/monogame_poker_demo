@@ -44,6 +44,16 @@ class Node
         return children.Find(x => x.tag == tag) as T;
     }
 
+    public void RemoveChildByTag(string tag)
+    {
+        children = children.FindAll(x => x.tag != tag);
+    }
+
+    public void RemoveAllChildren()
+    {
+        children = [];
+    }
+
     public virtual void Update(GameTime gameTime)
     {
         foreach (var child in children)

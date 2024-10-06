@@ -19,7 +19,7 @@ class ButtonNode : Node
     public override void Update(GameTime gameTime)
     {
 
-        if (Rectangle.Intersects(MyGame.MouseRectangle))
+        if (Rectangle.Intersects(MyGame.MouseRectangle) && MyGame.IsActive)
         {
             if (!isHover)
             {
@@ -29,7 +29,7 @@ class ButtonNode : Node
                 isHover = true;
             }
 
-            if (MyGame.MouseState.WasButtonPressed(MouseButton.Left) && MyGame.IsActive)
+            if (MyGame.MouseState.WasButtonPressed(MouseButton.Left))
             {
                 clickSound.Play();
                 transform.color = ClickColor;

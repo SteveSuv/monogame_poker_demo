@@ -54,7 +54,8 @@ class PeerCient
         {
             var writer = new NetDataWriter();
             writer.Put(message);
-            _serverPeer.Send(writer, DeliveryMethod.ReliableOrdered);
+            // _serverPeer.Send(writer, DeliveryMethod.ReliableOrdered);
+            _client.SendToAll(writer, DeliveryMethod.ReliableOrdered);
         }
     }
 }
