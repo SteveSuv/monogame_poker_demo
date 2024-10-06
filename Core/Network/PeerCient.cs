@@ -3,9 +3,9 @@ using LiteNetLib.Utils;
 
 class PeerCient
 {
-    private readonly NetManager _client;
-    private readonly EventBasedNetListener _clientListener;
-    private NetPeer _serverPeer;
+    public readonly NetManager _client;
+    public readonly EventBasedNetListener _clientListener;
+    public NetPeer _serverPeer;
 
     public PeerCient()
     {

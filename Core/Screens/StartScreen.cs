@@ -42,7 +42,8 @@ class StartScreen(MyGame game) : GameScreen(game)
 
         _connectServerButton.Click += (object sender, EventArgs e) =>
         {
-            // MyGame.NetworkManager.ConnectServer();
+            MyGame.NetworkManager.ConnectServer();
+            MyGame.LoadScreen(new LobbyScreen(game));
         };
     }
 

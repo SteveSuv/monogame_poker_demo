@@ -3,8 +3,8 @@ using LiteNetLib.Utils;
 
 class PeerServer
 {
-    private readonly NetManager _server;
-    private readonly EventBasedNetListener _serverListener;
+    public readonly NetManager _server;
+    public readonly EventBasedNetListener _serverListener;
     public static int MaxConnectedPeersCount = 4;
 
     public List<NetPeer> ConnectedPeerList => _server.ConnectedPeerList;

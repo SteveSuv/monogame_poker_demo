@@ -3,12 +3,11 @@ using Microsoft.Xna.Framework;
 
 class NetworkManager
 {
-    private readonly PeerServer server = new();
-    private readonly PeerCient client = new();
+    public readonly PeerServer server = new();
+    public readonly PeerCient client = new();
     public int port = 9000;
     public bool isHost = false;
-    public List<NetPeer> ConnectedPeerList => server.ConnectedPeerList;
-
+    public List<NetPeer> ConnectedPeerList => client._serverPeer.NetManager.ConnectedPeerList;
 
     public void Update(GameTime gameTime)
     {

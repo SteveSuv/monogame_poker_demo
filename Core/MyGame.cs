@@ -59,8 +59,8 @@ class MyGame : Game
         // FontSystemDefaults.KernelHeight = 2;
 
         SpriteBatch = new(base.GraphicsDevice);
-        _soundBGM = new(Assets.SoundBGM) { volume = 0.5f };
-        _soundBGM.Play();
+        // _soundBGM = new(Assets.SoundBGM) { volume = 0.5f };
+        // _soundBGM.Play();
     }
 
     protected override void Update(GameTime gameTime)
