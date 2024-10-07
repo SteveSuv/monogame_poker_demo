@@ -9,42 +9,48 @@ class StartScreen(MyGame game) : GameScreen(game)
         children = [
         new SpriteNode() { texture = Assets.TextureLogo, transform = { localPosition = new(0, -100), scale = new(0.2f) } },
             new LabelNode() { text = "二十一点", fontSize = 40 },
-            new ButtonNode()
-            {
-                tag = "CreateRoom",
-                transform = { localPosition = new(0, 100) },
-                children = [
-            new LabelNode() { text = "创建房间", transform = { color = Color.Black } },
-                ]
-            },
-            new ButtonNode()
-            {
-                tag = "JoinRoom",
-                transform = { localPosition = new(0, 160) },
-                children = [
-            new LabelNode() { text = "加入房间", transform = { color = Color.Black } },
-                ]
-            },
+
         ]
     };
-    private ButtonNode _createServerButton => world.GetChildByTag<ButtonNode>("CreateRoom");
-    private ButtonNode _connectServerButton => world.GetChildByTag<ButtonNode>("JoinRoom");
     public override void LoadContent()
     {
         base.LoadContent();
 
+
+        var _createServerButton = new ButtonNode()
+        {
+
+            transform = { localPosition = new(0, 100) },
+            children = [
+                new LabelNode() { text = "创建房间", transform = { color = Color.Black } },
+            ]
+        };
+
         _createServerButton.Click += (object sender, EventArgs e) =>
         {
-            MyGame.NetworkManager.StartServer();
-            MyGame.NetworkManager.ConnectServer();
+            MyGame.Peer.netManager.Start(9000);
             MyGame.LoadScreen(new LobbyScreen(game));
+        };
+
+
+        var _connectServerButton = new ButtonNode()
+        {
+
+            transform = { localPosition = new(0, 160) },
+            children = [
+                new LabelNode() { text = "加入房间", transform = { color = Color.Black } },
+            ]
         };
 
         _connectServerButton.Click += (object sender, EventArgs e) =>
         {
-            MyGame.NetworkManager.ConnectServer();
+            MyGame.Peer.netManager.Start();
+            MyGame.Peer.netManager.Connect("127.0.0.1", 9000, "");
             MyGame.LoadScreen(new LobbyScreen(game));
         };
+
+        world.AddChild(_createServerButton);
+        world.AddChild(_connectServerButton);
     }
 
     public override void Update(GameTime gameTime)

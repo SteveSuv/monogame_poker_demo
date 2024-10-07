@@ -20,7 +20,7 @@ class MyGame : Game
     public static readonly Color DebugColor = Color.Red;
     public static readonly Vector2 ScreenCenter = new(ScreenWidth / 2, ScreenHeight / 2);
     public static readonly ScreenManager ScreenManager = new();
-    public static readonly NetworkManager NetworkManager = new();
+    public static readonly Peer Peer = new();
 
     private Sound _soundBGM;
 
@@ -65,7 +65,7 @@ class MyGame : Game
 
     protected override void Update(GameTime gameTime)
     {
-        NetworkManager.Update(gameTime);
+        Peer.Update(gameTime);
         MouseExtended.Update();
         KeyboardExtended.Update();
         IsActive = base.IsActive;
