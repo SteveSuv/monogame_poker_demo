@@ -47,17 +47,11 @@ class MyGame : Game
     protected override void Initialize()
     {
         base.Initialize();
-        LoadScreen(new BootScreen(this));
+        LoadScreen(new StartScreen(this));
     }
 
     protected override void LoadContent()
     {
-        SpriteBatch = new(base.GraphicsDevice);
-
-        // FontSystemDefaults.FontResolutionFactor = 2;
-        // FontSystemDefaults.KernelWidth = 2;
-        // FontSystemDefaults.KernelHeight = 2;
-
         SpriteBatch = new(base.GraphicsDevice);
         // _soundBGM = new(Assets.SoundBGM) { volume = 0.5f };
         // _soundBGM.Play();

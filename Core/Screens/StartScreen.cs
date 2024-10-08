@@ -28,7 +28,7 @@ class StartScreen(MyGame game) : GameScreen(game)
 
         _createServerButton.Click += (object sender, EventArgs e) =>
         {
-            MyGame.Peer.netManager.Start(9000);
+            MyGame.Peer.peerServer.Start(9000);
             MyGame.LoadScreen(new LobbyScreen(game));
         };
 
@@ -44,8 +44,7 @@ class StartScreen(MyGame game) : GameScreen(game)
 
         _connectServerButton.Click += (object sender, EventArgs e) =>
         {
-            MyGame.Peer.netManager.Start();
-            MyGame.Peer.netManager.Connect("127.0.0.1", 9000, "");
+            MyGame.Peer.peerClient.Connect();
             MyGame.LoadScreen(new LobbyScreen(game));
         };
 

@@ -40,17 +40,13 @@ class LobbyScreen(MyGame game) : GameScreen(game)
 
         _backButton.Click += (object sender, EventArgs e) =>
         {
-            MyGame.Peer.netManager.DisconnectAll();
-            MyGame.Peer.netManager.Stop();
+            MyGame.Peer.Stop();
             MyGame.LoadScreen(new StartScreen(game));
         };
 
         world.AddChild(_backButton);
 
         world.AddChild(new Node() { tag = "Clients" });
-
-
-
     }
 
     public override void Update(GameTime gameTime)
@@ -60,7 +56,7 @@ class LobbyScreen(MyGame game) : GameScreen(game)
         var clientsNode = world.GetChildByTag<Node>("Clients");
         clientsNode.RemoveAllChildren();
 
-        var list = MyGame.Peer.netManager.ConnectedPeerList;
+        var list = MyGame.Peer.peerClient.serverPeer?.NetManager?.ConnectedPeerList ?? [];
 
         // Console.WriteLine(string.Join(", ",list.Select(a => a.Id).ToList()));
 
@@ -69,9 +65,6 @@ class LobbyScreen(MyGame game) : GameScreen(game)
             var item = list[i];
             clientsNode.AddChild(new LabelNode() { text = $"PeerID: {item.Id}", fontSize = 30, transform = { localPosition = new(0, 100 + i * 20) } });
         }
-
-
-        // 应该更新
 
         world.Update(gameTime);
     }
