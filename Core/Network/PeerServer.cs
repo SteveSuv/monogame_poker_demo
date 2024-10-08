@@ -1,21 +1,25 @@
 using LiteNetLib;
+using LiteNetLib.Utils;
 using Microsoft.Xna.Framework;
+
 
 class PeerServer
 {
     public readonly NetManager server;
-    public readonly EventBasedNetListener serverListener;
+    private readonly EventBasedNetListener serverListener = new();
+    private readonly NetDataWriter writer = new();
+    private readonly NetPacketProcessor packetProcessor = new();
 
     public PeerServer()
     {
-        serverListener = new EventBasedNetListener();
-
         serverListener.ConnectionRequestEvent += OnConnectionRequest;
         serverListener.PeerConnectedEvent += OnPeerConnected;
         serverListener.NetworkReceiveEvent += OnNetworkReceive;
         serverListener.PeerDisconnectedEvent += OnPeerDisconnected;
 
-        server = new NetManager(serverListener) { AutoRecycle = true };
+        server = new(serverListener) { AutoRecycle = true };
+
+        packetProcessor.SubscribeReusable<JoinPacket>(OnClientJoin);
     }
 
     public void Update(GameTime gameTime)
@@ -27,6 +31,18 @@ class PeerServer
     {
         server.Start(port); // 选择一个端口
         Console.WriteLine($"Server: server port {port} started. Waiting for connections...");
+    }
+
+    public void SendPacketToClients<T>(T packet, DeliveryMethod deliveryMethod = DeliveryMethod.ReliableOrdered) where T : class, new()
+    {
+        writer.Reset();
+        packetProcessor.Write(writer, packet);
+        server.SendToAll(writer, deliveryMethod);
+    }
+
+    private void OnClientJoin(JoinPacket packet)
+    {
+        Console.WriteLine($"Server: OnClientJoin: {packet.username}");
     }
 
     private void OnConnectionRequest(ConnectionRequest request)
@@ -47,6 +63,7 @@ class PeerServer
     private void OnPeerConnected(NetPeer peer)
     {
         Console.WriteLine($"Server: OnPeerConnected {peer.Id}");
+        SendPacketToClients(new JoinPacket { username = $"ID: {peer.Id}" }, DeliveryMethod.ReliableOrdered);
     }
 
     private void OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo)
@@ -57,5 +74,6 @@ class PeerServer
     private void OnNetworkReceive(NetPeer formPeer, NetPacketReader reader, byte channel, DeliveryMethod deliveryMethod)
     {
         Console.WriteLine($"Server: OnNetworkReceive {formPeer.Id}");
+        packetProcessor.ReadAllPackets(reader);
     }
 }

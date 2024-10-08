@@ -29,6 +29,9 @@ class StartScreen(MyGame game) : GameScreen(game)
         _createServerButton.Click += (object sender, EventArgs e) =>
         {
             MyGame.Peer.peerServer.Start(9000);
+
+            MyGame.Peer.peerClient.Connect();
+
             MyGame.LoadScreen(new LobbyScreen(game));
         };
 

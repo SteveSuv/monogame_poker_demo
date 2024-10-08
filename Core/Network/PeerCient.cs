@@ -1,21 +1,26 @@
 using LiteNetLib;
+using LiteNetLib.Utils;
 using Microsoft.Xna.Framework;
 
 class PeerCient
 {
     public readonly NetManager client;
-    public readonly EventBasedNetListener clientListener;
-    public NetPeer serverPeer;
+    private readonly EventBasedNetListener clientListener = new();
+    private NetPeer serverPeer;
+    private readonly NetDataWriter writer = new();
+    private readonly NetPacketProcessor packetProcessor = new();
+
+    public List<string> users = [];
 
     public PeerCient()
     {
-        clientListener = new EventBasedNetListener();
-
         clientListener.PeerConnectedEvent += OnPeerConnected;
         clientListener.NetworkReceiveEvent += OnNetworkReceive;
         clientListener.PeerDisconnectedEvent += OnPeerDisconnected;
 
         client = new NetManager(clientListener) { AutoRecycle = true };
+
+        packetProcessor.SubscribeReusable<JoinPacket>(OnClientJoin);
     }
 
     public void Update(GameTime gameTime)
@@ -28,6 +33,19 @@ class PeerCient
         client.Start();
         client.Connect(address, port, key);
         Console.WriteLine($"Client: connecting to {address}:{port}");
+    }
+
+    public void SendPacketToServer<T>(T packet, DeliveryMethod deliveryMethod = DeliveryMethod.ReliableOrdered) where T : class, new()
+    {
+        writer.Reset();
+        packetProcessor.Write(writer, packet);
+        serverPeer.Send(writer, deliveryMethod);
+    }
+
+    private void OnClientJoin(JoinPacket packet)
+    {
+        Console.WriteLine($"Client: OnClientJoin: {packet.username}");
+        users.Add(packet.username);
     }
 
     private void OnPeerConnected(NetPeer peer)
@@ -44,5 +62,6 @@ class PeerCient
     private void OnNetworkReceive(NetPeer formPeer, NetPacketReader reader, byte channel, DeliveryMethod deliveryMethod)
     {
         Console.WriteLine($"Client: OnNetworkReceive {formPeer.Id}");
+        packetProcessor.ReadAllPackets(reader);
     }
 }

@@ -10,7 +10,6 @@ class LobbyScreen(MyGame game) : GameScreen(game)
     private Node world = new()
     {
         transform = { localPosition = MyGame.ScreenCenter },
-
     };
 
     public override void LoadContent()
@@ -56,14 +55,17 @@ class LobbyScreen(MyGame game) : GameScreen(game)
         var clientsNode = world.GetChildByTag<Node>("Clients");
         clientsNode.RemoveAllChildren();
 
-        var list = MyGame.Peer.peerClient.serverPeer?.NetManager?.ConnectedPeerList ?? [];
+        // var list = MyGame.Peer.peerClient.serverPeer?.NetManager?.ConnectedPeerList ?? [];
+        var list = MyGame.Peer.peerClient.users;
 
         // Console.WriteLine(string.Join(", ",list.Select(a => a.Id).ToList()));
+
+        //  Console.WriteLine($"Lobby: ConnectedPeersCount: {list.Count}");
 
         for (int i = 0; i < list.Count; i++)
         {
             var item = list[i];
-            clientsNode.AddChild(new LabelNode() { text = $"PeerID: {item.Id}", fontSize = 30, transform = { localPosition = new(0, 100 + i * 20) } });
+            clientsNode.AddChild(new LabelNode() { text = $"PeerID: {item}", fontSize = 30, transform = { localPosition = new(0, 100 + i * 40) } });
         }
 
         world.Update(gameTime);
