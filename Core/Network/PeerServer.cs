@@ -19,7 +19,7 @@ class PeerServer
 
         server = new(serverListener) { AutoRecycle = true };
 
-        packetProcessor.SubscribeReusable<JoinPacket>(OnClientJoin);
+        // packetProcessor.SubscribeReusable<JoinPacket>(OnClientJoin);
     }
 
     public void Update(GameTime gameTime)
@@ -33,6 +33,12 @@ class PeerServer
         Console.WriteLine($"Server: server port {port} started. Waiting for connections...");
     }
 
+    public void Stop()
+    {
+        server.Stop();
+        SyncRoomState();
+    }
+
     public void SendPacketToClients<T>(T packet, DeliveryMethod deliveryMethod = DeliveryMethod.ReliableOrdered) where T : class, new()
     {
         writer.Reset();
@@ -40,10 +46,10 @@ class PeerServer
         server.SendToAll(writer, deliveryMethod);
     }
 
-    private void OnClientJoin(JoinPacket packet)
-    {
-        Console.WriteLine($"Server: OnClientJoin: {packet.username}");
-    }
+    // private void OnClientJoin(JoinPacket packet)
+    // {
+    //     Console.WriteLine($"Server: OnClientJoin: {packet.username}");
+    // }
 
     private void OnConnectionRequest(ConnectionRequest request)
     {
@@ -57,18 +63,43 @@ class PeerServer
         {
             request.Reject();
         }
+    }
 
+    private void SyncRoomState()
+    {
+        // var peers = server.ConnectedPeerList.Select(x => new RoomPeer()
+        // {
+        //     address = x.Address.ToString(),
+        //     addressFamily = x.AddressFamily,
+        //     connectionState = x.ConnectionState,
+        //     Id = x.Id,
+        //     Mtu = x.Mtu,
+        //     IsRunning = x.NetManager.IsRunning,
+        //     Ping = x.Ping,
+        //     Port = x.Port,
+        //     RemoteId = x.RemoteId,
+        //     RemoteTimeDelta = x.RemoteTimeDelta,
+        //     RemoteUtcTime = x.RemoteUtcTime.ToString(),
+        //     RoundTripTime = x.RoundTripTime,
+        //     Tag = x.Tag.ToString(),
+        //     TimeSinceLastPacket = x.TimeSinceLastPacket
+        // }).ToList();
+
+        var peers = server.ConnectedPeerList.Select(x => x.Id.ToString()).Reverse().ToArray();
+
+        SendPacketToClients(new RoomStatePacket { Peers = peers }, DeliveryMethod.ReliableOrdered);
     }
 
     private void OnPeerConnected(NetPeer peer)
     {
         Console.WriteLine($"Server: OnPeerConnected {peer.Id}");
-        SendPacketToClients(new JoinPacket { username = $"ID: {peer.Id}" }, DeliveryMethod.ReliableOrdered);
+        SyncRoomState();
     }
 
     private void OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo)
     {
         Console.WriteLine($"Server: OnPeerDisconnected {peer.Id}");
+        SyncRoomState();
     }
 
     private void OnNetworkReceive(NetPeer formPeer, NetPacketReader reader, byte channel, DeliveryMethod deliveryMethod)

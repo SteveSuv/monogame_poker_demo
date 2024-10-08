@@ -10,7 +10,7 @@ class PeerCient
     private readonly NetDataWriter writer = new();
     private readonly NetPacketProcessor packetProcessor = new();
 
-    public List<string> users = [];
+    public RoomStatePacket roomState;
 
     public PeerCient()
     {
@@ -20,7 +20,7 @@ class PeerCient
 
         client = new NetManager(clientListener) { AutoRecycle = true };
 
-        packetProcessor.SubscribeReusable<JoinPacket>(OnClientJoin);
+        packetProcessor.SubscribeReusable<RoomStatePacket>(OnRoomStateChange);
     }
 
     public void Update(GameTime gameTime)
@@ -35,6 +35,11 @@ class PeerCient
         Console.WriteLine($"Client: connecting to {address}:{port}");
     }
 
+    public void Stop()
+    {
+        client.Stop();
+    }
+
     public void SendPacketToServer<T>(T packet, DeliveryMethod deliveryMethod = DeliveryMethod.ReliableOrdered) where T : class, new()
     {
         writer.Reset();
@@ -42,10 +47,11 @@ class PeerCient
         serverPeer.Send(writer, deliveryMethod);
     }
 
-    private void OnClientJoin(JoinPacket packet)
+    private void OnRoomStateChange(RoomStatePacket packet)
     {
-        Console.WriteLine($"Client: OnClientJoin: {packet.username}");
-        users.Add(packet.username);
+        Console.WriteLine(packet.Peers);
+        Console.WriteLine($"Client: OnClientJoin: {packet?.Peers?.Length ?? 0}");
+        roomState = packet;
     }
 
     private void OnPeerConnected(NetPeer peer)
@@ -57,6 +63,8 @@ class PeerCient
     private void OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo)
     {
         Console.WriteLine($"Client: OnPeerDisconnected {peer.Id}");
+        serverPeer = null;
+        roomState.Peers = [];
     }
 
     private void OnNetworkReceive(NetPeer formPeer, NetPacketReader reader, byte channel, DeliveryMethod deliveryMethod)

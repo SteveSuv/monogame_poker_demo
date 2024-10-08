@@ -13,9 +13,7 @@ class Peer
 
     public void Stop()
     {
-        peerClient.client.DisconnectAll();
-        peerClient.client.Stop();
-        peerServer.server.DisconnectAll();
-        peerServer.server.Stop();
+        peerClient.Stop();
+        peerServer.Stop();
     }
 }

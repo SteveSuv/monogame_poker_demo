@@ -22,7 +22,7 @@ class MyGame : Game
     public static readonly ScreenManager ScreenManager = new();
     public static readonly Peer Peer = new();
 
-    private Sound _soundBGM;
+    // private Sound _soundBGM;
 
     public MyGame()
     {

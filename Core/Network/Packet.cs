@@ -1,4 +1,4 @@
-class JoinPacket
+class RoomStatePacket
 {
-    public string username { get; set; }
+    public string[] Peers { get; set; }
 }
