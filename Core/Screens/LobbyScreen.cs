@@ -3,7 +3,7 @@ using MonoGame.Extended.Screens;
 
 class LobbyScreen(MyGame game) : GameScreen(game)
 {
-    private RoomStatePacket roomState => MyGame.Peer.peerClient.roomState;
+    private static RoomStatePacket RoomState => MyGame.Peer.peerClient.roomState;
 
     private readonly Node world = new()
     {
@@ -37,7 +37,7 @@ class LobbyScreen(MyGame game) : GameScreen(game)
         };
 
 
-        _backButton.Click += (object sender, EventArgs e) =>
+        _backButton.OnClick += (object sender, Vector2 mousePos) =>
         {
             MyGame.Peer.Stop();
             MyGame.LoadScreen(new StartScreen(game));
@@ -50,25 +50,33 @@ class LobbyScreen(MyGame game) : GameScreen(game)
 
     public override void Update(GameTime gameTime)
     {
-        var nameNode = world.GetChildByTag<LabelNode>("Name");
-        nameNode.text = roomState.Name;
 
+        if (RoomState != null)
+        {
+            var nameNode = world.GetChildByTag<LabelNode>("Name");
+            nameNode.text = RoomState.Name;
 
-        var clientsNode = world.GetChildByTag<Node>("Clients");
-        clientsNode.RemoveAllChildren();
+            var clientsNode = world.GetChildByTag<Node>("Clients");
+            clientsNode.RemoveAllChildren();
 
-        var list = roomState.Peers;
+            var list = RoomState.Peers;
 
-        if (list.Length == 0)
+            if (list.Length == 0)
+            {
+                MyGame.LoadScreen(new StartScreen(game));
+            }
+
+            for (int i = 0; i < list.Length; i++)
+            {
+                var item = list[i];
+                clientsNode.AddChild(new LabelNode() { text = $"PeerID: ID_{item}", fontSize = 30, Transform = { localPosition = new(0, 100 + i * 40) } });
+            }
+        }
+        else
         {
             MyGame.LoadScreen(new StartScreen(game));
         }
 
-        for (int i = 0; i < list.Length; i++)
-        {
-            var item = list[i];
-            clientsNode.AddChild(new LabelNode() { text = $"PeerID: ID_{item}", fontSize = 30, Transform = { localPosition = new(0, 100 + i * 40) } });
-        }
 
         world.Update(gameTime);
     }

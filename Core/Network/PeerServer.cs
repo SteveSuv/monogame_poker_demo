@@ -56,7 +56,7 @@ class PeerServer
     {
         Console.WriteLine($"Server: OnConnectionRequest");
 
-        if (server.ConnectedPeersCount <= MaxConnectedPeersCount)
+        if (server.ConnectedPeersCount < MaxConnectedPeersCount)
         {
             request.AcceptIfKey("");
         }

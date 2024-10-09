@@ -4,10 +4,9 @@ using MonoGame.Extended.Graphics;
 
 class SpriteRegionNode : Node
 {
-    public Texture2DRegion texture2DRegion;
+    public Texture2DRegion texture2DRegion = null;
     public SpriteEffects effects = SpriteEffects.None;
-    public Vector2 Size => new(texture2DRegion.Width, texture2DRegion.Height);
-    public Vector2 OriginOffset => Transform.origin * Size;
+    public new Vector2 Size => new(texture2DRegion.Width, texture2DRegion.Height);
 
     public override void Update(GameTime gameTime)
     {
@@ -18,5 +17,10 @@ class SpriteRegionNode : Node
     {
         MyGame.SpriteBatch.Draw(textureRegion: texture2DRegion, position: Transform.WorldPosition, color: Transform.color, rotation: Transform.rotation, origin: OriginOffset, scale: Transform.scale, effects: effects, layerDepth: Transform.layerDepth);
         base.Draw();
+    }
+
+    public override Vector2 GetSize()
+    {
+        return Size;
     }
 }

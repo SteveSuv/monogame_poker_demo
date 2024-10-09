@@ -10,7 +10,7 @@ class PeerCient
     private readonly NetPacketProcessor clientPacketProcessor = new();
     private NetPeer serverPeer;
 
-    public RoomStatePacket roomState;
+    public RoomStatePacket roomState = null;
 
     public PeerCient()
     {
@@ -64,7 +64,7 @@ class PeerCient
     {
         Console.WriteLine($"Client: OnPeerDisconnected {peer.Id}");
         serverPeer = null;
-        roomState.Peers = [];
+        roomState = null;
     }
 
     private void OnNetworkReceive(NetPeer formPeer, NetPacketReader reader, byte channel, DeliveryMethod deliveryMethod)

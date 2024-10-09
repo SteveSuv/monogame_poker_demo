@@ -12,7 +12,7 @@ class MyGame : Game
     public static new GameWindow Window;
     public static MouseStateExtended MouseState => MouseExtended.GetState();
     public static KeyboardStateExtended KeyboardState => KeyboardExtended.GetState();
-    public static Rectangle MouseRectangle => new(MouseState.Position, new Point(1));
+    public static Vector2 MousePos => MouseState.Position.ToVector2();
     public static bool IsDebug = false;
     public static new bool IsActive = false;
     public static readonly int ScreenWidth = 1920 / 2;

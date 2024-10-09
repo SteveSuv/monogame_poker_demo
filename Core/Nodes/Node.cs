@@ -1,5 +1,7 @@
 
 using Microsoft.Xna.Framework;
+using MonoGame.Extended;
+using MonoGame.Extended.Input;
 
 class Node
 {
@@ -8,6 +10,15 @@ class Node
     public Node parent;
     public string tag;
     public TransformComponent Transform => GetComponent<TransformComponent>();
+    public Vector2 Size => GetSize();
+    public Vector2 OriginOffset => Transform.origin * Size;
+    public RectangleF Rectangle => new(Transform.WorldPosition - OriginOffset, Size);
+    private bool isHover = false;
+    public EventHandler<Vector2> OnHover = (object sender, Vector2 mousePos) => { };
+    public EventHandler<Vector2> OnClick = (object sender, Vector2 mousePos) => { };
+    public EventHandler<Vector2> OnLeave = (object sender, Vector2 mousePos) => { };
+    public EventHandler<Vector2> OnOutSideClick = (object sender, Vector2 mousePos) => { };
+
 
     public Node()
     {
@@ -49,6 +60,11 @@ class Node
         children = children.FindAll(x => x.tag != tag);
     }
 
+    public void RemoveChild(Node node)
+    {
+        children = children.FindAll(x => x != node);
+    }
+
     public void RemoveAllChildren()
     {
         children = [];
@@ -56,6 +72,9 @@ class Node
 
     public virtual void Update(GameTime gameTime)
     {
+
+        CheckHoverState();
+
         foreach (var child in children)
         {
             child.Update(gameTime);
@@ -65,6 +84,7 @@ class Node
                 child.parent = this;
             }
         }
+
         foreach (var component in components)
         {
             component.Update(gameTime);
@@ -82,5 +102,46 @@ class Node
         {
             node.Draw();
         }
+    }
+
+    public virtual Vector2 GetSize()
+    {
+        return new();
+    }
+
+    private void CheckHoverState()
+    {
+        if (MyGame.IsActive)
+        {
+            if (Rectangle.Contains(MyGame.MousePos))
+            {
+                if (!isHover)
+                {
+                    isHover = true;
+                    OnHover.Invoke(this, MyGame.MousePos);
+                }
+
+
+                if (MyGame.MouseState.WasButtonPressed(MouseButton.Left))
+                {
+                    OnClick.Invoke(this, MyGame.MousePos);
+                }
+            }
+            else
+            {
+                if (isHover)
+                {
+                    isHover = false;
+                    OnLeave.Invoke(this, MyGame.MousePos);
+
+                }
+
+                if (MyGame.MouseState.WasButtonPressed(MouseButton.Left))
+                {
+                    OnOutSideClick.Invoke(this, MyGame.MousePos);
+                }
+            }
+        }
+
     }
 }

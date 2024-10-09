@@ -25,12 +25,14 @@ class StartScreen(MyGame game) : GameScreen(game)
             ]
         };
 
-        _createServerButton.Click += (object sender, EventArgs e) =>
+        _createServerButton.OnClick += (object sender, Vector2 mousePos) =>
         {
             MyGame.Peer.peerServer.Start(9000);
             MyGame.Peer.peerClient.Connect();
             MyGame.LoadScreen(new LobbyScreen(game));
         };
+
+        world.AddChild(_createServerButton);
 
 
         var _connectServerButton = new ButtonNode()
@@ -42,14 +44,25 @@ class StartScreen(MyGame game) : GameScreen(game)
             ]
         };
 
-        _connectServerButton.Click += (object sender, EventArgs e) =>
+        _connectServerButton.OnClick += (object sender, Vector2 mousePos) =>
         {
             MyGame.Peer.peerClient.Connect();
             MyGame.LoadScreen(new LobbyScreen(game));
         };
 
-        world.AddChild(_createServerButton);
+
         world.AddChild(_connectServerButton);
+
+        var _nameInput = new InputNode() { Transform = { localPosition = new(0, -200) } };
+
+        _nameInput.OnInput += (object sender, string text) =>
+        {
+            Console.WriteLine(text);
+        };
+
+        world.AddChild(_nameInput);
+
+        world.AddChild(new ModalNode());
     }
 
     public override void Update(GameTime gameTime)
