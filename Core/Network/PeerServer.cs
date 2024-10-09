@@ -7,8 +7,9 @@ class PeerServer
 {
     public readonly NetManager server;
     private readonly EventBasedNetListener serverListener = new();
-    private readonly NetDataWriter writer = new();
-    private readonly NetPacketProcessor packetProcessor = new();
+    private readonly NetDataWriter serverWriter = new();
+    private readonly NetPacketProcessor serverPacketProcessor = new();
+    public int MaxConnectedPeersCount = 2;
 
     public PeerServer()
     {
@@ -41,9 +42,9 @@ class PeerServer
 
     public void SendPacketToClients<T>(T packet, DeliveryMethod deliveryMethod = DeliveryMethod.ReliableOrdered) where T : class, new()
     {
-        writer.Reset();
-        packetProcessor.Write(writer, packet);
-        server.SendToAll(writer, deliveryMethod);
+        serverWriter.Reset();
+        serverPacketProcessor.Write(serverWriter, packet);
+        server.SendToAll(serverWriter, deliveryMethod);
     }
 
     // private void OnClientJoin(JoinPacket packet)
@@ -55,7 +56,7 @@ class PeerServer
     {
         Console.WriteLine($"Server: OnConnectionRequest");
 
-        if (server.ConnectedPeersCount < 4)
+        if (server.ConnectedPeersCount <= MaxConnectedPeersCount)
         {
             request.AcceptIfKey("");
         }
@@ -87,7 +88,7 @@ class PeerServer
 
         var peers = server.ConnectedPeerList.Select(x => x.Id.ToString()).Reverse().ToArray();
 
-        SendPacketToClients(new RoomStatePacket { Peers = peers }, DeliveryMethod.ReliableOrdered);
+        SendPacketToClients(new RoomStatePacket { Name = $"{Environment.UserName}创建的房间", Peers = peers }, DeliveryMethod.ReliableOrdered);
     }
 
     private void OnPeerConnected(NetPeer peer)
@@ -105,6 +106,6 @@ class PeerServer
     private void OnNetworkReceive(NetPeer formPeer, NetPacketReader reader, byte channel, DeliveryMethod deliveryMethod)
     {
         Console.WriteLine($"Server: OnNetworkReceive {formPeer.Id}");
-        packetProcessor.ReadAllPackets(reader);
+        serverPacketProcessor.ReadAllPackets(reader);
     }
 }

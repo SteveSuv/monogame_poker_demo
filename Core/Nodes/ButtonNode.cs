@@ -13,8 +13,8 @@ class ButtonNode : Node
     public Color ClickColor = new(200, 200, 200);
     public Vector2 size = new(100, 50);
     public float Thickness => size.Y / 2;
-    public Vector2 OriginOffset => transform.origin * size;
-    public RectangleF Rectangle => new(transform.worldPosition - OriginOffset, size);
+    public Vector2 OriginOffset => Transform.origin * size;
+    public RectangleF Rectangle => new(Transform.WorldPosition - OriginOffset, size);
 
     public override void Update(GameTime gameTime)
     {
@@ -24,7 +24,7 @@ class ButtonNode : Node
             if (!isHover)
             {
                 hoverSound.Play();
-                transform.color = hoverColor;
+                Transform.color = hoverColor;
                 Hover?.Invoke(this, null);
                 isHover = true;
             }
@@ -32,7 +32,7 @@ class ButtonNode : Node
             if (MyGame.MouseState.WasButtonPressed(MouseButton.Left))
             {
                 clickSound.Play();
-                transform.color = ClickColor;
+                Transform.color = ClickColor;
                 Click?.Invoke(this, null);
             }
 
@@ -40,7 +40,7 @@ class ButtonNode : Node
         else
         {
             isHover = false;
-            transform.color = Color.White;
+            Transform.color = Color.White;
         }
 
         base.Update(gameTime);
@@ -48,7 +48,7 @@ class ButtonNode : Node
 
     public override void Draw()
     {
-        MyGame.SpriteBatch.DrawRectangle(rectangle: Rectangle, color: transform.color, thickness: Thickness, layerDepth: transform.layerDepth);
+        MyGame.SpriteBatch.DrawRectangle(rectangle: Rectangle, color: Transform.color, thickness: Thickness, layerDepth: Transform.layerDepth);
         base.Draw();
     }
 }

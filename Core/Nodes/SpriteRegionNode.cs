@@ -7,7 +7,8 @@ class SpriteRegionNode : Node
     public Texture2DRegion texture2DRegion;
     public SpriteEffects effects = SpriteEffects.None;
     public Vector2 Size => new(texture2DRegion.Width, texture2DRegion.Height);
-    public Vector2 OriginOffset => transform.origin * Size;
+    public Vector2 OriginOffset => Transform.origin * Size;
+
     public override void Update(GameTime gameTime)
     {
         base.Update(gameTime);
@@ -15,7 +16,7 @@ class SpriteRegionNode : Node
 
     public override void Draw()
     {
-        MyGame.SpriteBatch.Draw(textureRegion: texture2DRegion, position: transform.worldPosition, color: transform.color, rotation: transform.rotation, origin: OriginOffset, scale: transform.scale, effects: effects, layerDepth: transform.layerDepth);
+        MyGame.SpriteBatch.Draw(textureRegion: texture2DRegion, position: Transform.WorldPosition, color: Transform.color, rotation: Transform.rotation, origin: OriginOffset, scale: Transform.scale, effects: effects, layerDepth: Transform.layerDepth);
         base.Draw();
     }
 }

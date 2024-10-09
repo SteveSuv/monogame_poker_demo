@@ -6,9 +6,9 @@ class PeerCient
 {
     public readonly NetManager client;
     private readonly EventBasedNetListener clientListener = new();
+    private readonly NetDataWriter clientWriter = new();
+    private readonly NetPacketProcessor clientPacketProcessor = new();
     private NetPeer serverPeer;
-    private readonly NetDataWriter writer = new();
-    private readonly NetPacketProcessor packetProcessor = new();
 
     public RoomStatePacket roomState;
 
@@ -18,9 +18,9 @@ class PeerCient
         clientListener.NetworkReceiveEvent += OnNetworkReceive;
         clientListener.PeerDisconnectedEvent += OnPeerDisconnected;
 
-        client = new NetManager(clientListener) { AutoRecycle = true };
+        client = new(clientListener) { AutoRecycle = true };
 
-        packetProcessor.SubscribeReusable<RoomStatePacket>(OnRoomStateChange);
+        clientPacketProcessor.SubscribeReusable<RoomStatePacket>(OnRoomStateChange);
     }
 
     public void Update(GameTime gameTime)
@@ -42,9 +42,9 @@ class PeerCient
 
     public void SendPacketToServer<T>(T packet, DeliveryMethod deliveryMethod = DeliveryMethod.ReliableOrdered) where T : class, new()
     {
-        writer.Reset();
-        packetProcessor.Write(writer, packet);
-        serverPeer.Send(writer, deliveryMethod);
+        clientWriter.Reset();
+        clientPacketProcessor.Write(clientWriter, packet);
+        serverPeer.Send(clientWriter, deliveryMethod);
     }
 
     private void OnRoomStateChange(RoomStatePacket packet)
@@ -70,6 +70,6 @@ class PeerCient
     private void OnNetworkReceive(NetPeer formPeer, NetPacketReader reader, byte channel, DeliveryMethod deliveryMethod)
     {
         Console.WriteLine($"Client: OnNetworkReceive {formPeer.Id}");
-        packetProcessor.ReadAllPackets(reader);
+        clientPacketProcessor.ReadAllPackets(reader);
     }
 }

@@ -7,7 +7,7 @@ class Node
     public List<Component> components = [];
     public Node parent;
     public string tag;
-    public TransformComponent transform => GetComponent<TransformComponent>();
+    public TransformComponent Transform => GetComponent<TransformComponent>();
 
     public Node()
     {
@@ -59,12 +59,20 @@ class Node
         foreach (var child in children)
         {
             child.Update(gameTime);
-            child.parent = this;
+
+            if (child.parent != this)
+            {
+                child.parent = this;
+            }
         }
         foreach (var component in components)
         {
             component.Update(gameTime);
-            component.belong = this;
+
+            if (component.belong != this)
+            {
+                component.belong = this;
+            }
         }
     }
 

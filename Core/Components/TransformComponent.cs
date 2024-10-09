@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 class TransformComponent : Component
 {
     public Vector2 localPosition = Vector2.Zero;
-    public Vector2 worldPosition
+    public Vector2 WorldPosition
     {
         get
         {
@@ -11,7 +11,7 @@ class TransformComponent : Component
             {
                 return localPosition;
             }
-            return belong.parent.transform.worldPosition + localPosition;
+            return belong.parent.Transform.WorldPosition + localPosition;
         }
     }
     public float rotation = 0;

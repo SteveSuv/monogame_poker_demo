@@ -4,9 +4,9 @@ using MonoGame.Extended.Timers;
 
 class BootScreen(MyGame game) : GameScreen(game)
 {
-    private Node world = new()
+    private readonly Node world = new()
     {
-        transform = { localPosition = MyGame.ScreenCenter },
+        Transform = { localPosition = MyGame.ScreenCenter },
         children = [
             new LabelNode() { text = "Tommy Games Production", fontSize = 60 }
         ]
