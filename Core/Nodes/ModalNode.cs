@@ -7,7 +7,7 @@ class ModalNode : Node
 
     public ModalNode()
     {
-        color = Color.White * 0.9f;
+        color = Color.White * 0.8f;
         layerDepth = 1;
     }
 
@@ -19,6 +19,7 @@ class ModalNode : Node
     public override void Draw()
     {
         MyGame.SpriteBatch.FillRectangle(rectangle: Rectangle, color: color, layerDepth: layerDepth);
+        MyGame.SpriteBatch.DrawRectangle(rectangle: Rectangle, color: Color.Green, thickness: 2, layerDepth: layerDepth);
         base.Draw();
     }
 

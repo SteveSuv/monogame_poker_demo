@@ -19,4 +19,9 @@ static class AssetsLoader
         fontSystem.AddFont(File.ReadAllBytes(path[1..]));
         return fontSystem;
     }
+
+    public static Effect LoadShader(string path)
+    {
+        return new(MyGame.GraphicsDevice, File.ReadAllBytes(path[1..]));
+    }
 }

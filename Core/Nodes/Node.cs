@@ -105,6 +105,10 @@ class Node
         {
             child.parent = this;
             child.Update(gameTime);
+            if (layerDepth != 0)
+            {
+                child.layerDepth = layerDepth;
+            }
         }
 
         foreach (var component in components)

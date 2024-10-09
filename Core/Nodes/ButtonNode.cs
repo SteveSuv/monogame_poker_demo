@@ -35,6 +35,7 @@ class ButtonNode : Node
     public override void Draw()
     {
         MyGame.SpriteBatch.FillRectangle(rectangle: Rectangle, color: color, layerDepth: layerDepth);
+        MyGame.SpriteBatch.DrawRectangle(rectangle: Rectangle, color: Color.Black, thickness: 2, layerDepth: layerDepth);
         base.Draw();
     }
 

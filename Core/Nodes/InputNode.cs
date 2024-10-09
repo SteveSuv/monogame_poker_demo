@@ -68,12 +68,7 @@ class InputNode : Node
     public override void Draw()
     {
         MyGame.SpriteBatch.FillRectangle(rectangle: Rectangle, color: isFocused ? color : color * 0.8f, layerDepth: layerDepth);
-
-        if (isFocused)
-        {
-            MyGame.SpriteBatch.DrawRectangle(rectangle: Rectangle, color: Color.Green, thickness: 2, layerDepth: layerDepth);
-        }
-
+        MyGame.SpriteBatch.DrawRectangle(rectangle: Rectangle, color: isFocused ? Color.Green : Color.Black, thickness: 2, layerDepth: layerDepth);
         base.Draw();
     }
 
