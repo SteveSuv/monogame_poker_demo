@@ -3,11 +3,13 @@ using MonoGame.Extended.Screens;
 
 class StartScreen(MyGame game) : GameScreen(game)
 {
+
+    private readonly ModalNode modalNode = new() { layerDepth = -1 };
     private readonly Node world = new()
     {
-        Transform = { localPosition = MyGame.ScreenCenter },
+        localPosition = MyGame.ScreenCenter,
         children = [
-            new SpriteNode() { texture = Assets.TextureLogo, Transform = { localPosition = new(0, -100), scale = new(0.2f) } },
+            new SpriteNode() { texture = Assets.TextureLogo, localPosition = new(0, -100), scale = new(0.2f) },
             new LabelNode() { text = "二十一点", fontSize = 40 },
         ]
     };
@@ -15,13 +17,12 @@ class StartScreen(MyGame game) : GameScreen(game)
     {
         base.LoadContent();
 
-
         var _createServerButton = new ButtonNode()
         {
 
-            Transform = { localPosition = new(0, 100) },
+            localPosition = new(0, 100),
             children = [
-                new LabelNode() { text = "创建房间", Transform = { color = Color.Black } },
+                new LabelNode() { text = "创建房间", color = Color.Black },
             ]
         };
 
@@ -38,9 +39,9 @@ class StartScreen(MyGame game) : GameScreen(game)
         var _connectServerButton = new ButtonNode()
         {
 
-            Transform = { localPosition = new(0, 160) },
+            localPosition = new(0, 160),
             children = [
-                new LabelNode() { text = "加入房间", Transform = { color = Color.Black } },
+                new LabelNode() { text = "加入房间", color = Color.Black },
             ]
         };
 
@@ -50,10 +51,27 @@ class StartScreen(MyGame game) : GameScreen(game)
             MyGame.LoadScreen(new LobbyScreen(game));
         };
 
+        // world.AddChild(modalNode);
+
+        // _connectServerButton.OnMouseEnter += (object sender, Vector2 mousePos) =>
+        // {
+        //     modalNode.layerDepth = 1;
+        // };
+
+        // _connectServerButton.OnMouseLeave += (object sender, Vector2 mousePos) =>
+        // {
+        //     modalNode.layerDepth = -1;
+        // };
+
+        // _connectServerButton.OnMouseMove += (object sender, Vector2 mousePos) =>
+        // {
+        //     modalNode.WorldPosition = mousePos;
+        //     modalNode.origin = Origin.TopLeft;
+        // };
 
         world.AddChild(_connectServerButton);
 
-        var _nameInput = new InputNode() { Transform = { localPosition = new(0, -200) } };
+        var _nameInput = new InputNode() { localPosition = new(0, -200) };
 
         _nameInput.OnInput += (object sender, string text) =>
         {
@@ -61,8 +79,6 @@ class StartScreen(MyGame game) : GameScreen(game)
         };
 
         world.AddChild(_nameInput);
-
-        world.AddChild(new ModalNode());
     }
 
     public override void Update(GameTime gameTime)

@@ -14,7 +14,7 @@ class SpriteNode : Node
 
     public override void Draw()
     {
-        MyGame.SpriteBatch.Draw(texture: texture, position: Transform.WorldPosition, sourceRectangle: null, color: Transform.color, rotation: Transform.rotation, origin: OriginOffset, scale: Transform.scale, effects: effects, layerDepth: Transform.layerDepth);
+        MyGame.SpriteBatch.Draw(texture: texture, position: WorldPosition, sourceRectangle: null, color: color, rotation: rotation, origin: OriginOffset, scale: scale, effects: effects, layerDepth: layerDepth);
         base.Draw();
     }
 

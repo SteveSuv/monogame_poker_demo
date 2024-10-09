@@ -5,15 +5,15 @@ using MonoGame.Extended.Input;
 class ButtonNode : Node
 {
     public new Vector2 Size = new(100, 50);
-    private readonly Sound hoverSound = new(Assets.SoundButtonHover) { volume = 0.8f };
-    private readonly Sound clickSound = new(Assets.SoundButtonClick) { volume = 0.8f };
+    private readonly Sound hoverSound = new(Assets.SoundButtOnHover) { volume = 0.8f };
+    private readonly Sound clickSound = new(Assets.SoundButtOnClick) { volume = 0.8f };
 
     public ButtonNode()
     {
-        OnHover += (object sender, Vector2 mousePos) =>
+        OnMouseEnter += (object sender, Vector2 mousePos) =>
         {
             hoverSound.Play();
-            Transform.color *= 0.8f;
+            color *= 0.8f;
         };
 
         OnClick += (object sender, Vector2 mousePos) =>
@@ -21,9 +21,9 @@ class ButtonNode : Node
             clickSound.Play();
         };
 
-        OnLeave += (object sender, Vector2 mousePos) =>
+        OnMouseLeave += (object sender, Vector2 mousePos) =>
         {
-            Transform.color = Color.White;
+            color = Color.White;
         };
     }
 
@@ -34,7 +34,7 @@ class ButtonNode : Node
 
     public override void Draw()
     {
-        MyGame.SpriteBatch.FillRectangle(rectangle: Rectangle, color: Transform.color, layerDepth: Transform.layerDepth);
+        MyGame.SpriteBatch.FillRectangle(rectangle: Rectangle, color: color, layerDepth: layerDepth);
         base.Draw();
     }
 

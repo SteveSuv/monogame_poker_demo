@@ -14,8 +14,8 @@ static class Assets
 
 
     // sounds
-    public static SoundEffect SoundButtonClick => AssetsLoader.LoadSoundEffect("/Assets/Sounds/ButtonClick.wav");
-    public static SoundEffect SoundButtonHover => AssetsLoader.LoadSoundEffect("/Assets/Sounds/ButtonHover.wav");
+    public static SoundEffect SoundButtOnClick => AssetsLoader.LoadSoundEffect("/Assets/Sounds/ButtonClick.wav");
+    public static SoundEffect SoundButtOnHover => AssetsLoader.LoadSoundEffect("/Assets/Sounds/ButtonHover.wav");
     public static SoundEffect SoundBGM => AssetsLoader.LoadSoundEffect("/Assets/Sounds/BGM.wav");
 
     // fonts

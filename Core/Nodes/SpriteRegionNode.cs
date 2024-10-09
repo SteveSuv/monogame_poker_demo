@@ -15,7 +15,7 @@ class SpriteRegionNode : Node
 
     public override void Draw()
     {
-        MyGame.SpriteBatch.Draw(textureRegion: texture2DRegion, position: Transform.WorldPosition, color: Transform.color, rotation: Transform.rotation, origin: OriginOffset, scale: Transform.scale, effects: effects, layerDepth: Transform.layerDepth);
+        MyGame.SpriteBatch.Draw(textureRegion: texture2DRegion, position: WorldPosition, color: color, rotation: rotation, origin: OriginOffset, scale: scale, effects: effects, layerDepth: layerDepth);
         base.Draw();
     }
 

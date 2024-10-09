@@ -1,6 +1,5 @@
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
-using MonoGame.Extended.Input;
 
 class ModalNode : Node
 {
@@ -8,13 +7,8 @@ class ModalNode : Node
 
     public ModalNode()
     {
-        Transform.color = Color.White * 0.9f;
-        Transform.layerDepth = 1;
-
-        OnOutSideClick += (object sender, Vector2 mousePos) =>
-        {
-            parent.RemoveChild(this);
-        };
+        color = Color.White * 0.9f;
+        layerDepth = 1;
     }
 
     public override void Update(GameTime gameTime)
@@ -24,7 +18,7 @@ class ModalNode : Node
 
     public override void Draw()
     {
-        MyGame.SpriteBatch.FillRectangle(rectangle: Rectangle, color: Transform.color, layerDepth: Transform.layerDepth);
+        MyGame.SpriteBatch.FillRectangle(rectangle: Rectangle, color: color, layerDepth: layerDepth);
         base.Draw();
     }
 

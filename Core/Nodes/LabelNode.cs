@@ -13,7 +13,7 @@ class LabelNode : Node
     public TextStyle textStyle = TextStyle.None;
     public FontSystemEffect effect = FontSystemEffect.None;
     public int effectAmount = 1;
-    public new Vector2 Size => Font.MeasureString(text: text, scale: Transform.scale, characterSpacing: characterSpacing, lineSpacing: lineSpacing, effect: effect, effectAmount: effectAmount);
+    public new Vector2 Size => Font.MeasureString(text: text, scale: scale, characterSpacing: characterSpacing, lineSpacing: lineSpacing, effect: effect, effectAmount: effectAmount);
 
 
     public override void Update(GameTime gameTime)
@@ -22,7 +22,7 @@ class LabelNode : Node
 
     public override void Draw()
     {
-        MyGame.SpriteBatch.DrawString(font: Font, text: text, position: Transform.WorldPosition, color: Transform.color, rotation: Transform.rotation, origin: OriginOffset, scale: Transform.scale, layerDepth: Transform.layerDepth, characterSpacing: characterSpacing, lineSpacing: lineSpacing, textStyle: textStyle, effect: effect, effectAmount: effectAmount);
+        MyGame.SpriteBatch.DrawString(font: Font, text: text, position: WorldPosition, color: color, rotation: rotation, origin: OriginOffset, scale: scale, layerDepth: layerDepth, characterSpacing: characterSpacing, lineSpacing: lineSpacing, textStyle: textStyle, effect: effect, effectAmount: effectAmount);
         // DrawDebug();
         base.Draw();
     }

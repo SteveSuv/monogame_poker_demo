@@ -9,21 +9,42 @@ class Node
     public List<Component> components = [];
     public Node parent;
     public string tag;
-    public TransformComponent Transform => GetComponent<TransformComponent>();
-    public Vector2 Size => GetSize();
-    public Vector2 OriginOffset => Transform.origin * Size;
-    public RectangleF Rectangle => new(Transform.WorldPosition - OriginOffset, Size);
-    private bool isHover = false;
-    public EventHandler<Vector2> OnHover = (object sender, Vector2 mousePos) => { };
-    public EventHandler<Vector2> OnClick = (object sender, Vector2 mousePos) => { };
-    public EventHandler<Vector2> OnLeave = (object sender, Vector2 mousePos) => { };
-    public EventHandler<Vector2> OnOutSideClick = (object sender, Vector2 mousePos) => { };
-
-
-    public Node()
+    public Vector2 localPosition = Vector2.Zero;
+    public Vector2 WorldPosition
     {
-        AddComponent(new TransformComponent());
+        get
+        {
+            if (parent == null)
+            {
+                return localPosition;
+            }
+            return parent.WorldPosition + localPosition;
+        }
+        set
+        {
+            if (parent == null)
+            {
+                localPosition = value;
+            }
+            localPosition = value - parent.WorldPosition;
+        }
     }
+    public float rotation = 0;
+    public Vector2 scale = Vector2.One;
+    public Vector2 origin = Origin.Center;
+    public Color color = Color.White;
+    public float layerDepth = 0;
+    public Vector2 Size => GetSize();
+    public Vector2 OriginOffset => origin * Size;
+    public RectangleF Rectangle => new(WorldPosition - OriginOffset, Size);
+    private bool isHover = false;
+    public EventHandler<Vector2> OnMouseEnter = (object sender, Vector2 mousePos) => { };
+    public EventHandler<Vector2> OnMouseDown = (object sender, Vector2 mousePos) => { };
+    public EventHandler<Vector2> OnMouseUp = (object sender, Vector2 mousePos) => { };
+    public EventHandler<Vector2> OnClick = (object sender, Vector2 mousePos) => { };
+    public EventHandler<Vector2> OnMouseMove = (object sender, Vector2 mousePos) => { };
+    public EventHandler<Vector2> OnMouseLeave = (object sender, Vector2 mousePos) => { };
+    public EventHandler<Vector2> OnOutSideClick = (object sender, Vector2 mousePos) => { };
 
     public Node AddComponent(Component component)
     {
@@ -70,6 +91,11 @@ class Node
         children = [];
     }
 
+    public void RemoveFromParent()
+    {
+        parent?.RemoveChild(this);
+    }
+
     public virtual void Update(GameTime gameTime)
     {
 
@@ -77,22 +103,14 @@ class Node
 
         foreach (var child in children)
         {
+            child.parent = this;
             child.Update(gameTime);
-
-            if (child.parent != this)
-            {
-                child.parent = this;
-            }
         }
 
         foreach (var component in components)
         {
+            component.belong = this;
             component.Update(gameTime);
-
-            if (component.belong != this)
-            {
-                component.belong = this;
-            }
         }
     }
 
@@ -118,22 +136,28 @@ class Node
                 if (!isHover)
                 {
                     isHover = true;
-                    OnHover.Invoke(this, MyGame.MousePos);
+                    OnMouseEnter.Invoke(this, MyGame.MousePos);
                 }
-
 
                 if (MyGame.MouseState.WasButtonPressed(MouseButton.Left))
                 {
+                    OnMouseDown.Invoke(this, MyGame.MousePos);
+                }
+
+                if (MyGame.MouseState.WasButtonReleased(MouseButton.Left))
+                {
+                    OnMouseUp.Invoke(this, MyGame.MousePos);
                     OnClick.Invoke(this, MyGame.MousePos);
                 }
+
+                OnMouseMove.Invoke(this, MyGame.MousePos);
             }
             else
             {
                 if (isHover)
                 {
                     isHover = false;
-                    OnLeave.Invoke(this, MyGame.MousePos);
-
+                    OnMouseLeave.Invoke(this, MyGame.MousePos);
                 }
 
                 if (MyGame.MouseState.WasButtonPressed(MouseButton.Left))

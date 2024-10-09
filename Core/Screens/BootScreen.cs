@@ -6,7 +6,7 @@ class BootScreen(MyGame game) : GameScreen(game)
 {
     private readonly Node world = new()
     {
-        Transform = { localPosition = MyGame.ScreenCenter },
+        localPosition = MyGame.ScreenCenter,
         children = [
             new LabelNode() { text = "Tommy Games Production", fontSize = 60 }
         ]

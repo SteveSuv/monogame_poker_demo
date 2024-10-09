@@ -11,7 +11,7 @@ class InputNode : Node
     public int maxLength = 5;
     public string placeholder = "仅可输入字母a-z";
     public new Vector2 Size = new(200, 50);
-    private readonly LabelNode _labelNode = new() { Transform = { color = new(150, 150, 150) } };
+    private readonly LabelNode _labelNode = new() { color = new(150, 150, 150) };
 
     public InputNode()
     {
@@ -30,8 +30,6 @@ class InputNode : Node
 
     public override void Update(GameTime gameTime)
     {
-
-
         if (isFocused)
         {
             foreach (var key in MyGame.KeyboardState.GetPressedKeys())
@@ -56,12 +54,12 @@ class InputNode : Node
         if (text == "" && !isFocused)
         {
             _labelNode.text = placeholder;
-            _labelNode.Transform.color = new(150, 150, 150);
+            _labelNode.color = new(150, 150, 150);
         }
         else
         {
             _labelNode.text = text;
-            _labelNode.Transform.color = Color.Black;
+            _labelNode.color = Color.Black;
         }
 
         base.Update(gameTime);
@@ -69,11 +67,11 @@ class InputNode : Node
 
     public override void Draw()
     {
-        MyGame.SpriteBatch.FillRectangle(rectangle: Rectangle, color: isFocused ? Transform.color : Transform.color * 0.8f, layerDepth: Transform.layerDepth);
+        MyGame.SpriteBatch.FillRectangle(rectangle: Rectangle, color: isFocused ? color : color * 0.8f, layerDepth: layerDepth);
 
         if (isFocused)
         {
-            MyGame.SpriteBatch.DrawRectangle(rectangle: Rectangle, color: Color.Green, thickness: 2, layerDepth: Transform.layerDepth);
+            MyGame.SpriteBatch.DrawRectangle(rectangle: Rectangle, color: Color.Green, thickness: 2, layerDepth: layerDepth);
         }
 
         base.Draw();

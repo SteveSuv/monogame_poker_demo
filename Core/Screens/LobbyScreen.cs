@@ -7,9 +7,9 @@ class LobbyScreen(MyGame game) : GameScreen(game)
 
     private readonly Node world = new()
     {
-        Transform = { localPosition = MyGame.ScreenCenter },
+        localPosition = MyGame.ScreenCenter,
         children = [
-            new LabelNode() { tag = "Name", fontSize = 30, Transform = { localPosition = new(0, -200) } },
+            new LabelNode() { tag = "Name", fontSize = 30, localPosition = new(0, -200) },
             new Node() { tag = "Clients" },
         ]
     };
@@ -25,14 +25,14 @@ class LobbyScreen(MyGame game) : GameScreen(game)
         //                          .FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork)
         //                          ?.ToString();
 
-        // world.AddChild(new LabelNode() { text = $"{computerName} 创建的房间  {ipv4Address}:9000", fontSize = 30, Transform = { localPosition = new(0, -200) } });
+        // world.AddChild(new LabelNode() { text = $"{computerName} 创建的房间  {ipv4Address}:9000", fontSize = 30,  localPosition = new(0, -200) } });
         ////
 
         var _backButton = new ButtonNode()
         {
-            Transform = { localPosition = new(0, 10) },
+            localPosition = new(0, 10),
             children = [
-                new LabelNode() { text = "返回", Transform = { color = Color.Black } }
+                new LabelNode() { text = "返回", color = Color.Black }
             ]
         };
 
@@ -69,7 +69,7 @@ class LobbyScreen(MyGame game) : GameScreen(game)
             for (int i = 0; i < list.Length; i++)
             {
                 var item = list[i];
-                clientsNode.AddChild(new LabelNode() { text = $"PeerID: ID_{item}", fontSize = 30, Transform = { localPosition = new(0, 100 + i * 40) } });
+                clientsNode.AddChild(new LabelNode() { text = $"PeerID: ID_{item}", fontSize = 30, localPosition = new(0, 100 + i * 40) });
             }
         }
         else
