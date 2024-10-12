@@ -2,11 +2,13 @@
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Input;
+using MonoGame.Extended.Timers;
+using MonoGame.Extended.Tweening;
 
 class Node
 {
     public List<Node> children = [];
-    public List<Component> components = [];
+    // public List<Component> components = [];
     public Node parent;
     public string tag;
     public Vector2 localPosition = Vector2.Zero;
@@ -26,18 +28,35 @@ class Node
             {
                 localPosition = value;
             }
-            localPosition = value - parent.WorldPosition;
+            else
+            {
+                localPosition = value - parent.WorldPosition;
+            }
+
         }
     }
     public float rotation = 0;
     public Vector2 scale = Vector2.One;
     public Vector2 origin = Origin.Center;
     public Color color = Color.White;
-    public float layerDepth = 0;
+    public float layerDepth
+    {
+        get
+        {
+            if (parent == null) return 0;
+            return parent.layerDepth;
+        }
+        set { }
+    }
     public Vector2 Size => GetSize();
     public Vector2 OriginOffset => origin * Size;
     public RectangleF Rectangle => new(WorldPosition - OriginOffset, Size);
     private bool isHover = false;
+    public List<Action<Tweener>> tweenerActions = [];
+    private readonly List<Tweener> tweeners = [];
+    public Dictionary<CountdownTimer, EventHandler> countdownTimers = [];
+    public Dictionary<ContinuousClock, EventHandler> continuousClocks = [];
+
     public EventHandler<Vector2> OnMouseEnter = (object sender, Vector2 mousePos) => { };
     public EventHandler<Vector2> OnMouseDown = (object sender, Vector2 mousePos) => { };
     public EventHandler<Vector2> OnMouseUp = (object sender, Vector2 mousePos) => { };
@@ -46,12 +65,12 @@ class Node
     public EventHandler<Vector2> OnMouseLeave = (object sender, Vector2 mousePos) => { };
     public EventHandler<Vector2> OnOutSideClick = (object sender, Vector2 mousePos) => { };
 
-    public Node AddComponent(Component component)
-    {
-        component.belong = this;
-        components.Add(component);
-        return this;
-    }
+    // public Node AddComponent(Component component)
+    // {
+    //     component.belong = this;
+    //     components.Add(component);
+    //     return this;
+    // }
 
     public Node AddChild(Node node)
     {
@@ -60,10 +79,10 @@ class Node
         return this;
     }
 
-    public T GetComponent<T>() where T : Component
-    {
-        return components.Find(x => x is T) as T;
-    }
+    // public T GetComponent<T>() where T : Component
+    // {
+    //     return components.Find(x => x is T) as T;
+    // }
 
 
     public T GetChild<T>() where T : Node
@@ -96,26 +115,75 @@ class Node
         parent?.RemoveChild(this);
     }
 
-    public virtual void Update(GameTime gameTime)
+    public void AddCountdownTimer(double second, EventHandler eventHandler)
     {
 
+    }
+
+    public virtual void Initialize()
+    {
+        foreach (var countdownTimer in countdownTimers)
+        {
+            countdownTimer.Key.Completed += countdownTimer.Value;
+        }
+
+        foreach (var continuousClock in continuousClocks)
+        {
+            continuousClock.Key.Tick += continuousClock.Value;
+        }
+
+        foreach (var tweenerAction in tweenerActions)
+        {
+            var t = new Tweener();
+            tweeners.Add(t);
+            tweenerAction(t);
+        }
+
+        foreach (var child in children)
+        {
+            foreach (var tweenerAction in child.tweenerActions)
+            {
+                var t = new Tweener();
+                child.tweeners.Add(t);
+                tweenerAction(t);
+            }
+
+        }
+    }
+
+    public virtual void Update(GameTime gameTime)
+    {
         CheckHoverState();
+
+        foreach (var countdownTimer in countdownTimers)
+        {
+            countdownTimer.Key.Update(gameTime);
+        }
+
+
+
+        foreach (var continuousClock in continuousClocks)
+        {
+            continuousClock.Key.Update(gameTime);
+        }
 
         foreach (var child in children)
         {
             child.parent = this;
             child.Update(gameTime);
-            if (layerDepth != 0)
+
+            foreach (var tweener in child.tweeners)
             {
-                child.layerDepth = layerDepth;
+                tweener.Update(gameTime.GetElapsedSeconds());
             }
+
         }
 
-        foreach (var component in components)
-        {
-            component.belong = this;
-            component.Update(gameTime);
-        }
+        // foreach (var component in components)
+        // {
+        //     component.belong = this;
+        //     component.Update(gameTime);
+        // }
     }
 
     public virtual void Draw()

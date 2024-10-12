@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Screens;
 
 class StartScreen(MyGame game) : GameScreen(game)
@@ -11,9 +12,20 @@ class StartScreen(MyGame game) : GameScreen(game)
             new LabelNode() { text = "二十一点", fontSize = 40 },
         ]
     };
-    public override void LoadContent()
+    public override void Initialize()
     {
-        base.LoadContent();
+        base.Initialize();
+
+        var bg = new SpriteNode() { texture = Assets.TextureBackground, WorldPosition = new(0, 0), layerDepth = 0 };
+
+        bg.tweenerActions.AddRange([
+            t => t.TweenTo(target: bg, expression: e => e.rotation, toValue: (float)Math.PI, 1f),
+            t => t.TweenTo(target: bg, expression: e => e.rotation, toValue: 0, 1f, 1f),
+            t => t.TweenTo(target: bg, expression: e => e.scale, toValue: new(2), 1f),
+            t => t.TweenTo(target: bg, expression: e => e.scale, toValue: new(1), 1f, 1f),
+        ]);
+
+        world.AddChild(bg);
 
         var _createServerButton = new ButtonNode()
         {
@@ -43,26 +55,26 @@ class StartScreen(MyGame game) : GameScreen(game)
             ]
         };
 
-        var modalNode = new ModalNode() { layerDepth = -1 };
-        var inputNode = new InputNode() { text = "localhost:9000" };
-        var buttonNode = new ButtonNode() { localPosition = new(0, 80), children = [new LabelNode() { text = "连接", color = Color.Black }] };
+        // var modalNode = new ModalNode() { layerDepth = -1 };
+        // var inputNode = new InputNode() { text = "localhost:9000" };
+        // var buttonNode = new ButtonNode() { localPosition = new(0, 80), children = [new LabelNode() { text = "连接", color = Color.Black }] };
 
-        buttonNode.OnClick += (object sender, Vector2 mousePos) =>
-        {
-            var arr = inputNode.text.Split(":");
-            var address = arr[0].Trim();
-            var port = int.Parse(arr[1].Trim());
-            MyGame.Peer.peerClient.Connect(address, port);
-            MyGame.LoadScreen(new LobbyScreen(game));
-        };
+        // buttonNode.OnClick += (object sender, Vector2 mousePos) =>
+        // {
+        //     var arr = inputNode.text.Split(":");
+        //     var address = arr[0].Trim();
+        //     var port = int.Parse(arr[1].Trim());
+        //     MyGame.Peer.peerClient.Connect(address, port);
+        //     MyGame.LoadScreen(new LobbyScreen(game));
+        // };
 
-        modalNode.AddChild(inputNode).AddChild(buttonNode);
-        world.AddChild(modalNode);
+        // modalNode.AddChild(inputNode).AddChild(buttonNode);
+        // world.AddChild(modalNode);
 
-        _connectServerButton.OnClick += (object sender, Vector2 mousePos) =>
-        {
-            modalNode.layerDepth = 1;
-        };
+        // _connectServerButton.OnClick += (object sender, Vector2 mousePos) =>
+        // {
+        //     modalNode.layerDepth = 1;
+        // };
 
         // world.AddChild(modalNode);
 
@@ -92,6 +104,8 @@ class StartScreen(MyGame game) : GameScreen(game)
         // };
 
         // world.AddChild(_nameInput);
+
+        world.Initialize();
     }
 
     public override void Update(GameTime gameTime)
@@ -103,9 +117,9 @@ class StartScreen(MyGame game) : GameScreen(game)
     {
         // var logo = world.GetChildByTag<SpriteNode>("Logo");
 
-        MyGame.GraphicsDevice.Clear(Color.Black);
+        MyGame.GraphicsDevice.Clear(Color.White);
 
-        MyGame.SpriteBatch.Begin();
+        MyGame.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
         // Assets.EffectGaussianBlur.Parameters["TexelSize"].SetValue(new Vector2(1) / logo.Size);
         // Assets.EffectGaussianBlur.CurrentTechnique.Passes[0].Apply();

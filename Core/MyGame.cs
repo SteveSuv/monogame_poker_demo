@@ -47,7 +47,7 @@ class MyGame : Game
     protected override void Initialize()
     {
         base.Initialize();
-        LoadScreen(new StartScreen(this));
+        LoadScreen(new BootScreen(this));
     }
 
     protected override void LoadContent()

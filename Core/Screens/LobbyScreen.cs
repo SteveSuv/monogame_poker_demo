@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Screens;
 
 class LobbyScreen(MyGame game) : GameScreen(game)
@@ -14,10 +15,9 @@ class LobbyScreen(MyGame game) : GameScreen(game)
         ]
     };
 
-    public override void LoadContent()
+    public override void Initialize()
     {
-        base.LoadContent();
-
+        base.Initialize();
 
         // var computerName = Environment.MachineName;
         // var ipv4Address = Dns.GetHostEntry(Dns.GetHostName())
@@ -45,6 +45,7 @@ class LobbyScreen(MyGame game) : GameScreen(game)
 
         world.AddChild(_backButton);
 
+        world.Initialize();
         // world.AddChild(new Node() { tag = "Clients" });
     }
 
@@ -84,7 +85,7 @@ class LobbyScreen(MyGame game) : GameScreen(game)
     public override void Draw(GameTime gameTime)
     {
         MyGame.GraphicsDevice.Clear(Color.Black);
-        MyGame.SpriteBatch.Begin();
+        MyGame.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
         world.Draw();
         MyGame.SpriteBatch.End();
     }

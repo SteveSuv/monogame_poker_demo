@@ -1,6 +1,5 @@
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
-using MonoGame.Extended.Input;
 
 class ButtonNode : Node
 {

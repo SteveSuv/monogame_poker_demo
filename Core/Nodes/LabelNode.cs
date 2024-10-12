@@ -1,6 +1,5 @@
 using FontStashSharp;
 using Microsoft.Xna.Framework;
-using MonoGame.Extended;
 
 class LabelNode : Node
 {
