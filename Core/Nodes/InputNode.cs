@@ -1,7 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
-using MonoGame.Extended.Input;
 
 class InputNode : Node
 {
@@ -13,19 +12,24 @@ class InputNode : Node
     public new Vector2 Size = new(200, 50);
     private readonly LabelNode _labelNode = new() { color = new(150, 150, 150) };
 
-    public InputNode()
+    public override void Initialize()
     {
-        AddChild(_labelNode);
+        NodeManager.AddChild(_labelNode);
 
-        OnClick += (object sender, Vector2 mousePos) =>
+        ComponentManager.AddComponent(new MouseEventComponent()
         {
-            isFocused = true;
-        };
+            OnClick = (object sender, Vector2 mousePos) =>
+                  {
+                      isFocused = true;
+                  },
 
-        OnOutSideClick += (object sender, Vector2 mousePos) =>
-        {
-            isFocused = false;
-        };
+            OnOutSideClick = (object sender, Vector2 mousePos) =>
+            {
+                isFocused = false;
+            }
+        });
+
+        base.Initialize();
     }
 
     public override void Update(GameTime gameTime)
@@ -67,8 +71,9 @@ class InputNode : Node
 
     public override void Draw()
     {
-        MyGame.SpriteBatch.FillRectangle(rectangle: Rectangle, color: isFocused ? color : color * 0.8f, layerDepth: layerDepth);
-        MyGame.SpriteBatch.DrawRectangle(rectangle: Rectangle, color: isFocused ? Color.Green : Color.Black, thickness: 2, layerDepth: layerDepth);
+        MyGame.SpriteBatch.FillRectangle(rectangle: Rectangle, color: isFocused ? color : color * 0.8f, layerDepth: LayerDepth);
+        MyGame.SpriteBatch.DrawRectangle(rectangle: Rectangle, color: isFocused ? Color.Green : Color.Black, thickness: 2, layerDepth: LayerDepth);
+
         base.Draw();
     }
 

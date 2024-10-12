@@ -17,11 +17,12 @@ class LabelNode : Node
 
     public override void Update(GameTime gameTime)
     {
+        base.Update(gameTime);
     }
 
     public override void Draw()
     {
-        MyGame.SpriteBatch.DrawString(font: Font, text: text, position: WorldPosition, color: color, rotation: rotation, origin: OriginOffset, scale: scale, layerDepth: layerDepth, characterSpacing: characterSpacing, lineSpacing: lineSpacing, textStyle: textStyle, effect: effect, effectAmount: effectAmount);
+        MyGame.SpriteBatch.DrawString(font: Font, text: text, position: WorldPosition, color: color, rotation: rotation, origin: OriginOffset, scale: scale, layerDepth: LayerDepth, characterSpacing: characterSpacing, lineSpacing: lineSpacing, textStyle: textStyle, effect: effect, effectAmount: effectAmount);
         // DrawDebug();
         base.Draw();
     }

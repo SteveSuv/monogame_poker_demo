@@ -5,9 +5,9 @@ class HealthComponent : Component
     public int health;
     public int maxHealth = 100;
 
-    public EventHandler<int> OnDamage;
+    public EventHandler<int> OnDamage = (object sender, int damage) => { };
 
-    public HealthComponent()
+    public override void Initialize()
     {
         health = maxHealth;
     }

@@ -5,10 +5,11 @@ class ModalNode : Node
 {
     public new Vector2 Size = new(MyGame.ScreenWidth / 2, MyGame.ScreenHeight / 2);
 
-    public ModalNode()
+    public override void Initialize()
     {
         color = Color.White * 0.8f;
-        layerDepth = 1;
+        LayerDepth = 1;
+        base.Initialize();
     }
 
     public override void Update(GameTime gameTime)
@@ -18,8 +19,8 @@ class ModalNode : Node
 
     public override void Draw()
     {
-        MyGame.SpriteBatch.FillRectangle(rectangle: Rectangle, color: color, layerDepth: layerDepth);
-        MyGame.SpriteBatch.DrawRectangle(rectangle: Rectangle, color: Color.Green, thickness: 2, layerDepth: layerDepth);
+        MyGame.SpriteBatch.FillRectangle(rectangle: Rectangle, color: color, layerDepth: LayerDepth);
+        MyGame.SpriteBatch.DrawRectangle(rectangle: Rectangle, color: Color.Green, thickness: 2, layerDepth: LayerDepth);
         base.Draw();
     }
 

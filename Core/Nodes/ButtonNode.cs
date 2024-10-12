@@ -4,27 +4,39 @@ using MonoGame.Extended;
 class ButtonNode : Node
 {
     public new Vector2 Size = new(100, 50);
-    private readonly Sound hoverSound = new(Assets.SoundButtOnHover) { volume = 0.8f };
-    private readonly Sound clickSound = new(Assets.SoundButtOnClick) { volume = 0.8f };
 
-    public ButtonNode()
+    public override void Initialize()
     {
-        OnMouseEnter += (object sender, Vector2 mousePos) =>
+        var SoundButtOnClickComponent = new SoundComponent() { soundEffect = Assets.SoundButtOnClick };
+        var SoundButtOnHoverComponent = new SoundComponent() { soundEffect = Assets.SoundButtOnHover };
+
+        ComponentManager.AddComponent(SoundButtOnClickComponent);
+
+        ComponentManager.AddComponent(SoundButtOnHoverComponent);
+
+        ComponentManager.AddComponent(new MouseEventComponent()
         {
-            hoverSound.Play();
+            OnMouseEnter = (object sender, Vector2 mousePos) =>
+        {
+            SoundButtOnHoverComponent.Play();
             color *= 0.8f;
-        };
+        },
 
-        OnClick += (object sender, Vector2 mousePos) =>
-        {
-            clickSound.Play();
-        };
+            OnClick = (object sender, Vector2 mousePos) =>
+                   {
+                       SoundButtOnClickComponent.Play();
+                   },
 
-        OnMouseLeave += (object sender, Vector2 mousePos) =>
-        {
-            color = Color.White;
-        };
+
+            OnMouseLeave = (object sender, Vector2 mousePos) =>
+            {
+                color = Color.White;
+            }
+        });
+
+        base.Initialize();
     }
+
 
     public override void Update(GameTime gameTime)
     {
@@ -33,8 +45,9 @@ class ButtonNode : Node
 
     public override void Draw()
     {
-        MyGame.SpriteBatch.FillRectangle(rectangle: Rectangle, color: color, layerDepth: layerDepth);
-        MyGame.SpriteBatch.DrawRectangle(rectangle: Rectangle, color: Color.Black, thickness: 2, layerDepth: layerDepth);
+        MyGame.SpriteBatch.FillRectangle(rectangle: Rectangle, color: color, layerDepth: LayerDepth);
+        MyGame.SpriteBatch.DrawRectangle(rectangle: Rectangle, color: Color.Black, thickness: 2, layerDepth: LayerDepth);
+
         base.Draw();
     }
 

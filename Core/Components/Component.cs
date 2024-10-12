@@ -1,12 +1,11 @@
 using Microsoft.Xna.Framework;
 
-class Component
+abstract class Component
 {
     public Node belong;
+    public string tag;
 
-    public virtual void Initialize() { }
-    public virtual void Update(GameTime gameTime)
-    {
+    public abstract void Initialize();
 
-    }
+    public abstract void Update(GameTime gameTime);
 }

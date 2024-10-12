@@ -9,7 +9,7 @@ class LobbyScreen(MyGame game) : GameScreen(game)
     private readonly Node world = new()
     {
         localPosition = MyGame.ScreenCenter,
-        children = [
+        Children = [
             new LabelNode() { tag = "Name", fontSize = 30, localPosition = new(0, -200) },
             new Node() { tag = "Clients" },
         ]
@@ -17,36 +17,24 @@ class LobbyScreen(MyGame game) : GameScreen(game)
 
     public override void Initialize()
     {
-        base.Initialize();
 
-        // var computerName = Environment.MachineName;
-        // var ipv4Address = Dns.GetHostEntry(Dns.GetHostName())
-        //                          .AddressList
-        //                          .FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork)
-        //                          ?.ToString();
 
-        // world.AddChild(new LabelNode() { text = $"{computerName} 创建的房间  {ipv4Address}:9000", fontSize = 30,  localPosition = new(0, -200) } });
-        ////
-
-        var _backButton = new ButtonNode()
+        world.NodeManager.AddChild(new ButtonNode()
         {
             localPosition = new(0, 10),
-            children = [
+            Children = [
                 new LabelNode() { text = "返回", color = Color.Black }
             ]
-        };
-
-
-        _backButton.OnClick += (object sender, Vector2 mousePos) =>
+        }).ComponentManager.AddComponent(new MouseEventComponent()
         {
-            MyGame.Peer.Stop();
-            MyGame.LoadScreen(new StartScreen(game));
-        };
-
-        world.AddChild(_backButton);
+            OnClick = (object sender, Vector2 mousePos) =>
+                    {
+                        MyGame.Peer.Stop();
+                        MyGame.LoadScreen(new StartScreen(game));
+                    }
+        });
 
         world.Initialize();
-        // world.AddChild(new Node() { tag = "Clients" });
     }
 
     public override void Update(GameTime gameTime)
@@ -54,11 +42,11 @@ class LobbyScreen(MyGame game) : GameScreen(game)
 
         if (RoomState != null)
         {
-            var nameNode = world.GetChildByTag<LabelNode>("Name");
+            var nameNode = world.NodeManager.GetChildByTag<LabelNode>("Name");
             nameNode.text = RoomState.Name;
 
-            var clientsNode = world.GetChildByTag<Node>("Clients");
-            clientsNode.RemoveAllChildren();
+            var clientsNode = world.NodeManager.GetChildByTag<Node>("Clients");
+            clientsNode.NodeManager.RemoveAllChildren();
 
             var list = RoomState.Peers;
 
@@ -70,7 +58,7 @@ class LobbyScreen(MyGame game) : GameScreen(game)
             for (int i = 0; i < list.Length; i++)
             {
                 var item = list[i];
-                clientsNode.AddChild(new LabelNode() { text = $"PeerID: ID_{item}", fontSize = 30, localPosition = new(0, 100 + i * 40) });
+                clientsNode.NodeManager.AddChild(new LabelNode() { text = $"PeerID: ID_{item}", fontSize = 30, localPosition = new(0, 100 + i * 40) });
             }
         }
         else

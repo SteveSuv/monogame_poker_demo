@@ -1,12 +1,10 @@
+using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Screens;
-using MonoGame.Extended.Tweening;
 
 class BootScreen(MyGame game) : GameScreen(game)
 {
-
-
     private readonly Node world = new()
     {
         localPosition = MyGame.ScreenCenter,
@@ -14,18 +12,22 @@ class BootScreen(MyGame game) : GameScreen(game)
 
     public override void Initialize()
     {
-        base.Initialize();
 
-        world.countdownTimers.Add(new(2), (_, _) =>
+        world.ComponentManager.AddComponent(new CountdownComponent()
         {
-            MyGame.LoadScreen(new StartScreen(game));
+            intervalSeconds = 2,
+            Completed = (_, _) =>
+            {
+                MyGame.LoadScreen(new StartScreen(game));
+            }
         });
 
-        var labelNode = new LabelNode() { text = "Tommy Games Production", fontSize = 60, color = Color.Yellow, localPosition = new(0, 100) };
 
-        labelNode.tweenerActions.Add(t => t.TweenTo(target: labelNode, expression: e => e.localPosition, toValue: new(0, 0), duration: 1));
 
-        world.AddChild(labelNode);
+        world.NodeManager.AddChild(new LabelNode() { text = "Tommy Games Production", fontSize = 60, color = Color.White, effect = FontSystemEffect.Stroked, localPosition = new(0, 10) }).ComponentManager.AddComponent(new TweenerComponent()
+        {
+            tweenerAction = (t, node) => t.TweenTo(target: node, expression: e => e.localPosition, toValue: new(0, 0), duration: 1)
+        });
 
         world.Initialize();
     }

@@ -22,7 +22,7 @@ class MyGame : Game
     public static readonly ScreenManager ScreenManager = new();
     public static readonly Peer Peer = new();
 
-    // private Sound _soundBGM;
+    public Node world = new();
 
     public MyGame()
     {
@@ -53,12 +53,14 @@ class MyGame : Game
     protected override void LoadContent()
     {
         SpriteBatch = new(base.GraphicsDevice);
-        // _soundBGM = new(Assets.SoundBGM) { volume = 0.5f };
-        // _soundBGM.Play();
+        world.ComponentManager.AddComponent(new SoundComponent() { soundEffect = Assets.SoundBGM, autoPlay = true });
+        world.Initialize();
     }
 
     protected override void Update(GameTime gameTime)
     {
+        world.Update(gameTime);
+
         Peer.Update(gameTime);
         MouseExtended.Update();
         KeyboardExtended.Update();
@@ -69,6 +71,8 @@ class MyGame : Game
     protected override void Draw(GameTime gameTime)
     {
         GraphicsDevice.Clear(Color.Black);
+        world.Draw();
+
         base.Draw(gameTime);
     }
 
