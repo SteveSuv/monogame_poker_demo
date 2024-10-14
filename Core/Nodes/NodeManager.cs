@@ -21,7 +21,6 @@ class NodeManager(Node belong)
         return children.OfType<T>().FirstOrDefault(x => x.tag == tag);
     }
 
-
     public T GetFirstChildOfType<T>() where T : Node
     {
         return children.OfType<T>().FirstOrDefault();

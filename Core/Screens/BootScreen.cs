@@ -16,18 +16,13 @@ class BootScreen(MyGame game) : GameScreen(game)
         world.ComponentManager.AddComponent(new CountdownComponent()
         {
             intervalSeconds = 2,
-            Completed = (_, _) =>
+            Completed = (object sender, EventArgs e) =>
             {
                 MyGame.LoadScreen(new StartScreen(game));
             }
         });
 
-
-
-        world.NodeManager.AddChild(new LabelNode() { text = "Tommy Games Production", fontSize = 60, color = Color.White, effect = FontSystemEffect.Stroked, localPosition = new(0, 10) }).ComponentManager.AddComponent(new TweenerComponent()
-        {
-            tweenerAction = (t, node) => t.TweenTo(target: node, expression: e => e.localPosition, toValue: new(0, 0), duration: 1)
-        });
+        world.NodeManager.AddChild(new LabelNode() { text = "Tommy Games Production", fontSize = 60, color = Color.White, effect = FontSystemEffect.Stroked });
 
         world.Initialize();
     }

@@ -17,8 +17,6 @@ class LobbyScreen(MyGame game) : GameScreen(game)
 
     public override void Initialize()
     {
-
-
         world.NodeManager.AddChild(new ButtonNode()
         {
             localPosition = new(0, 10),
@@ -48,17 +46,19 @@ class LobbyScreen(MyGame game) : GameScreen(game)
             var clientsNode = world.NodeManager.GetChildByTag<Node>("Clients");
             clientsNode.NodeManager.RemoveAllChildren();
 
-            var list = RoomState.Peers;
+            var clients = RoomState.Clients ?? [];
 
-            if (list.Length == 0)
+            if (clients.Length == 0)
             {
                 MyGame.LoadScreen(new StartScreen(game));
             }
 
-            for (int i = 0; i < list.Length; i++)
+            for (int i = 0; i < clients.Length; i++)
             {
-                var item = list[i];
-                clientsNode.NodeManager.AddChild(new LabelNode() { text = $"PeerID: ID_{item}", fontSize = 30, localPosition = new(0, 100 + i * 40) });
+                var client = clients[i];
+                var isAdmin = client.PeerId == 0;
+
+                clientsNode.NodeManager.AddChild(new LabelNode() { text = $"玩家编号{client.PeerId}: {client.Name} {(isAdmin ? "(房主)" : "")}", fontSize = 30, localPosition = new(0, 100 + i * 40) });
             }
         }
         else

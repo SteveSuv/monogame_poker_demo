@@ -8,7 +8,7 @@ class StartScreen(MyGame game) : GameScreen(game)
     {
         localPosition = MyGame.ScreenCenter,
         Children = [
-            new SpriteNode() { tag = "Logo", texture = Assets.TextureLogo, localPosition = new(0, -100), scale = new(0.2f), rotation = 0 },
+            new SpriteNode() { texture = Assets.TextureLogo, localPosition = new(0, -100), scale = new(0.2f), rotation = 0 },
             new LabelNode() { text = "二十一点", fontSize = 40 },
         ]
     };
@@ -43,6 +43,13 @@ class StartScreen(MyGame game) : GameScreen(game)
             Children = [
                 new LabelNode() { text = "加入房间", color = Color.Black },
             ]
+        }).ComponentManager.AddComponent(new MouseEventComponent()
+        {
+            OnClick = (object sender, Vector2 mousePos) =>
+                    {
+                        MyGame.Peer.peerClient.Connect();
+                        MyGame.LoadScreen(new LobbyScreen(game));
+                    }
         });
 
         world.Initialize();

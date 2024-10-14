@@ -72,7 +72,6 @@ class MyGame : Game
     {
         GraphicsDevice.Clear(Color.Black);
         world.Draw();
-
         base.Draw(gameTime);
     }
 

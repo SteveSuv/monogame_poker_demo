@@ -23,7 +23,6 @@ class LabelNode : Node
     public override void Draw()
     {
         MyGame.SpriteBatch.DrawString(font: Font, text: text, position: WorldPosition, color: color, rotation: rotation, origin: OriginOffset, scale: scale, layerDepth: LayerDepth, characterSpacing: characterSpacing, lineSpacing: lineSpacing, textStyle: textStyle, effect: effect, effectAmount: effectAmount);
-        // DrawDebug();
         base.Draw();
     }
 
@@ -31,13 +30,4 @@ class LabelNode : Node
     {
         return Size;
     }
-
-    // private void DrawDebug()
-    // {
-    //     if (true)
-    //     {
-    //         MyGame.SpriteBatch.DrawRectangle(Rectangle, MyGame.DebugColor);
-    //         MyGame.SpriteBatch.DrawPoint(position: Rectangle.Center, color: MyGame.DebugColor, size: 4);
-    //     }
-    // }
 }

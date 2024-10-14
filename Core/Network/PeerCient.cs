@@ -20,7 +20,15 @@ class PeerCient
 
         client = new(clientListener) { AutoRecycle = true };
 
+        clientPacketProcessor.RegisterNestedType<RoomClientPacket>(() => new());
+        clientPacketProcessor.RegisterNestedType<RoomStatePacket>(() => new());
         clientPacketProcessor.SubscribeReusable<RoomStatePacket>(OnRoomStateChange);
+    }
+
+    private void OnRoomStateChange(RoomStatePacket packet)
+    {
+        Console.WriteLine($"Client: OnRoomStateChange: {packet.Name}");
+        roomState = packet;
     }
 
     public void Update(GameTime gameTime)
@@ -47,18 +55,18 @@ class PeerCient
         serverPeer.Send(clientWriter, deliveryMethod);
     }
 
-    private void OnRoomStateChange(RoomStatePacket packet)
-    {
-        Console.WriteLine(packet.Peers);
-        Console.WriteLine($"Client: OnClientJoin: {packet?.Peers?.Length ?? 0}");
-        roomState = packet;
-    }
-
     private void OnPeerConnected(NetPeer peer)
     {
         Console.WriteLine($"Client: OnPeerConnected {peer.Id}");
         serverPeer = peer;
+        Console.WriteLine($"Name {Environment.UserName}, RemoteId {client.FirstPeer.RemoteId}");
+        SendPacketToServer(new RoomClientPacket()
+        {
+            Name = Environment.UserName,
+            PeerId = client.FirstPeer.RemoteId
+        });
     }
+
 
     private void OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo)
     {

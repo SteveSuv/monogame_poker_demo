@@ -11,6 +11,8 @@ class PeerServer
     private readonly NetPacketProcessor serverPacketProcessor = new();
     public int MaxConnectedPeersCount = 2;
 
+    public Dictionary<int, RoomClientPacket> clients = [];
+
     public PeerServer()
     {
         serverListener.ConnectionRequestEvent += OnConnectionRequest;
@@ -20,8 +22,18 @@ class PeerServer
 
         server = new(serverListener) { AutoRecycle = true };
 
-        // packetProcessor.SubscribeReusable<JoinPacket>(OnClientJoin);
+        serverPacketProcessor.RegisterNestedType<RoomClientPacket>(() => new());
+        serverPacketProcessor.RegisterNestedType<RoomStatePacket>(() => new());
+        serverPacketProcessor.SubscribeReusable<RoomClientPacket>(OnClientStateChange);
     }
+
+    private void OnClientStateChange(RoomClientPacket packet)
+    {
+        Console.WriteLine($"Server: OnClientStateChange: {packet.Name} {packet.PeerId}");
+        clients.TryAdd(packet.PeerId, packet);
+        SyncRoomState();
+    }
+
 
     public void Update(GameTime gameTime)
     {
@@ -47,11 +59,6 @@ class PeerServer
         server.SendToAll(serverWriter, deliveryMethod);
     }
 
-    // private void OnClientJoin(JoinPacket packet)
-    // {
-    //     Console.WriteLine($"Server: OnClientJoin: {packet.username}");
-    // }
-
     private void OnConnectionRequest(ConnectionRequest request)
     {
         Console.WriteLine($"Server: OnConnectionRequest");
@@ -68,27 +75,8 @@ class PeerServer
 
     private void SyncRoomState()
     {
-        // var peers = server.ConnectedPeerList.Select(x => new RoomPeer()
-        // {
-        //     address = x.Address.ToString(),
-        //     addressFamily = x.AddressFamily,
-        //     connectionState = x.ConnectionState,
-        //     Id = x.Id,
-        //     Mtu = x.Mtu,
-        //     IsRunning = x.NetManager.IsRunning,
-        //     Ping = x.Ping,
-        //     Port = x.Port,
-        //     RemoteId = x.RemoteId,
-        //     RemoteTimeDelta = x.RemoteTimeDelta,
-        //     RemoteUtcTime = x.RemoteUtcTime.ToString(),
-        //     RoundTripTime = x.RoundTripTime,
-        //     Tag = x.Tag.ToString(),
-        //     TimeSinceLastPacket = x.TimeSinceLastPacket
-        // }).ToList();
-
-        var peers = server.ConnectedPeerList.Select(x => x.Id.ToString()).Reverse().ToArray();
-
-        SendPacketToClients(new RoomStatePacket { Name = $"{Environment.UserName}创建的房间", Peers = peers }, DeliveryMethod.ReliableOrdered);
+        var Clients = clients.Values.Reverse().ToArray();
+        SendPacketToClients(new RoomStatePacket { Name = $"{Environment.UserName}创建的房间", Clients = Clients });
     }
 
     private void OnPeerConnected(NetPeer peer)

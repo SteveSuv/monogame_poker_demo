@@ -57,6 +57,4 @@ class ComponentManager(Node belong)
             component.Update(gameTime);
         }
     }
-
-
 }
