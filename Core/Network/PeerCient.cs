@@ -20,7 +20,7 @@ class PeerCient
 
         client = new(clientListener) { AutoRecycle = true };
 
-        clientPacketProcessor.RegisterNestedType<RoomClientPacket>(() => new());
+        clientPacketProcessor.RegisterNestedType<RoomClient>();
         clientPacketProcessor.SubscribeReusable<RoomStatePacket>(OnRoomStateChange);
     }
 
@@ -61,8 +61,11 @@ class PeerCient
         Console.WriteLine($"Name {Environment.UserName}, RemoteId {client.FirstPeer.RemoteId}");
         SendPacketToServer(new RoomClientPacket()
         {
-            Name = Environment.UserName,
-            PeerId = client.FirstPeer.RemoteId
+            Client = new()
+            {
+                Name = Environment.UserName,
+                PeerId = client.FirstPeer.RemoteId
+            }
         });
     }
 

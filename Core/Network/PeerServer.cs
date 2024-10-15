@@ -11,7 +11,7 @@ class PeerServer
     private readonly NetPacketProcessor serverPacketProcessor = new();
     public int MaxConnectedPeersCount = 2;
 
-    public Dictionary<int, RoomClientPacket> clients = [];
+    public Dictionary<int, RoomClient> clients = [];
 
     public PeerServer()
     {
@@ -22,14 +22,14 @@ class PeerServer
 
         server = new(serverListener) { AutoRecycle = true };
 
-        serverPacketProcessor.RegisterNestedType<RoomClientPacket>(() => new());
+        serverPacketProcessor.RegisterNestedType<RoomClient>();
         serverPacketProcessor.SubscribeReusable<RoomClientPacket>(OnClientStateChange);
     }
 
     private void OnClientStateChange(RoomClientPacket packet)
     {
-        Console.WriteLine($"Server: OnClientStateChange: {packet.Name} {packet.PeerId}");
-        clients.TryAdd(packet.PeerId, packet);
+        Console.WriteLine($"Server: OnClientStateChange: {packet.Client.Name} {packet.Client.PeerId}");
+        clients.TryAdd(packet.Client.PeerId, packet.Client);
         SyncRoomState();
     }
 
@@ -73,7 +73,7 @@ class PeerServer
 
     private void SyncRoomState()
     {
-        var Clients = clients.Values.Reverse().ToArray();
+        var Clients = clients.Values.ToArray();
         SendPacketToClients(new RoomStatePacket { Name = $"{Environment.UserName}创建的房间", Clients = Clients });
     }
 

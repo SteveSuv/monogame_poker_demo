@@ -3,12 +3,15 @@ using LiteNetLib.Utils;
 class RoomStatePacket
 {
     public string Name { get; set; }
-    public RoomClientPacket[] Clients { get; set; }
+    public RoomClient[] Clients { get; set; }
 }
 
+class RoomClientPacket
+{
+    public RoomClient Client { get; set; }
+}
 
-
-class RoomClientPacket : INetSerializable
+struct RoomClient : INetSerializable
 {
     public string Name;
     public int PeerId;
