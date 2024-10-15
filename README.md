@@ -1,11 +1,13 @@
-# todo
+# Intro
+a poker demo made with monogame
 
-- 去掉addxxx什么的，直接用list
-- 优化component
-- 优化结构
+# packages
+- https://github.com/monogame/monogame
+- https://github.com/craftworkgames/MonoGame.Extended
 
-# core
-- node是可以被渲染的东西，核心是draw
-- component是无法渲染的东西，只是给node附加能力
-- node可以嵌套，component不可以嵌套
-- 一个Node可以带多个相同的component
+# How to dev
+1. download dotnet8 https://dotnet.microsoft.com/en-us/download
+2. download vscode plugin `c# dev kit`
+3. debug: vscode -> run -> debug
+4. build: `dotnet publish --sc`
+5. push code: `sh push.sh`

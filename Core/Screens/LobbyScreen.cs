@@ -19,7 +19,7 @@ class LobbyScreen(MyGame game) : GameScreen(game)
     {
         world.NodeManager.AddChild(new ButtonNode()
         {
-            localPosition = new(0, 10),
+            localPosition = new(-100, 10),
             Children = [
                 new LabelNode() { text = "返回", color = Color.Black }
             ]
@@ -29,6 +29,21 @@ class LobbyScreen(MyGame game) : GameScreen(game)
                     {
                         MyGame.Peer.Stop();
                         MyGame.LoadScreen(new StartScreen(game));
+                    }
+        });
+
+
+        world.NodeManager.AddChild(new ButtonNode()
+        {
+            localPosition = new(100, 10),
+            Children = [
+              new LabelNode() { text = "开始", color = Color.Black }
+          ]
+        }).ComponentManager.AddComponent(new MouseEventComponent()
+        {
+            OnClick = (object sender, Vector2 mousePos) =>
+                    {
+                        MyGame.LoadScreen(new RoomScreen(game));
                     }
         });
 
@@ -72,7 +87,7 @@ class LobbyScreen(MyGame game) : GameScreen(game)
 
     public override void Draw(GameTime gameTime)
     {
-        MyGame.GraphicsDevice.Clear(Color.Black);
+        MyGame.GraphicsDevice.Clear(Color.DarkBlue);
         MyGame.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
         world.Draw();
         MyGame.SpriteBatch.End();

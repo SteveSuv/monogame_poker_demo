@@ -12,6 +12,7 @@ static class Assets
     public static readonly Texture2D TextureCardsBlackSpades = AssetsLoader.LoadTexture2D("/Assets/Images/Spades-88x124.png");
     public static readonly Texture2D TextureChips = AssetsLoader.LoadTexture2D("/Assets/Images/ChipsB_Flat-64x72.png");
     public static readonly Texture2D TextureBackground = AssetsLoader.LoadTexture2D("/Assets/Images/Background.png");
+    public static readonly Texture2D TextureTable = AssetsLoader.LoadTexture2D("/Assets/Images/Table.png");
 
     // sounds
     public static readonly SoundEffect SoundButtOnClick = AssetsLoader.LoadSoundEffect("/Assets/Sounds/ButtonClick.wav");

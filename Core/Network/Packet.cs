@@ -16,7 +16,7 @@ struct RoomClient : INetSerializable
     public string Name;
     public int PeerId;
 
-    public void Serialize(NetDataWriter writer)
+    public readonly void Serialize(NetDataWriter writer)
     {
         writer.Put(Name ?? "");
         writer.Put(PeerId);
