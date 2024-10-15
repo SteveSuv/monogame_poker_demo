@@ -23,7 +23,6 @@ class PeerServer
         server = new(serverListener) { AutoRecycle = true };
 
         serverPacketProcessor.RegisterNestedType<RoomClientPacket>(() => new());
-        serverPacketProcessor.RegisterNestedType<RoomStatePacket>(() => new());
         serverPacketProcessor.SubscribeReusable<RoomClientPacket>(OnClientStateChange);
     }
 
@@ -33,7 +32,6 @@ class PeerServer
         clients.TryAdd(packet.PeerId, packet);
         SyncRoomState();
     }
-
 
     public void Update(GameTime gameTime)
     {
@@ -88,6 +86,7 @@ class PeerServer
     private void OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo)
     {
         Console.WriteLine($"Server: OnPeerDisconnected {peer.Id}");
+        clients.Remove(peer.Id);
         SyncRoomState();
     }
 

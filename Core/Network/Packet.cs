@@ -1,28 +1,16 @@
 using LiteNetLib.Utils;
 
-class RoomStatePacket : INetSerializable
+class RoomStatePacket
 {
-    public string Name = "";
-    public RoomClientPacket[] Clients = [];
-
-    public void Serialize(NetDataWriter writer)
-    {
-        writer.Put(Name);
-        writer.PutArray(Clients, 2);
-    }
-
-    public void Deserialize(NetDataReader reader)
-    {
-        Name = reader.GetString();
-        Clients = reader.GetArray<RoomClientPacket>(2);
-    }
+    public string Name { get; set; }
+    public RoomClientPacket[] Clients { get; set; }
 }
 
 
 
 class RoomClientPacket : INetSerializable
 {
-    public string Name = "";
+    public string Name;
     public int PeerId;
 
     public void Serialize(NetDataWriter writer)

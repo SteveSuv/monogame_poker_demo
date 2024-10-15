@@ -21,7 +21,6 @@ class PeerCient
         client = new(clientListener) { AutoRecycle = true };
 
         clientPacketProcessor.RegisterNestedType<RoomClientPacket>(() => new());
-        clientPacketProcessor.RegisterNestedType<RoomStatePacket>(() => new());
         clientPacketProcessor.SubscribeReusable<RoomStatePacket>(OnRoomStateChange);
     }
 

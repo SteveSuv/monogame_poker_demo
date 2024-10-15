@@ -18,7 +18,7 @@ class StartScreen(MyGame game) : GameScreen(game)
 
         bg.ComponentManager.AddComponent(new TweenerComponent() { tweenerAction = (t, node) => t.TweenTo(target: node, expression: e => e.scale, toValue: new(1.8f), 60f).AutoReverse().RepeatForever() }).AddComponent(new TweenerComponent() { tweenerAction = (t, node) => t.TweenTo(target: node, expression: e => e.rotation, toValue: MathHelper.ToRadians(10), 60f).AutoReverse().RepeatForever() });
 
-        world.Children.Insert(0, bg);
+        // world.Children.Insert(0, bg);
 
         world.NodeManager.AddChild(new ButtonNode()
         {
@@ -62,7 +62,7 @@ class StartScreen(MyGame game) : GameScreen(game)
 
     public override void Draw(GameTime gameTime)
     {
-        MyGame.GraphicsDevice.Clear(Color.White);
+        MyGame.GraphicsDevice.Clear(Color.Black);
         MyGame.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
         world.Draw();
         MyGame.SpriteBatch.End();
