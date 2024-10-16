@@ -18,6 +18,7 @@ class MyGame : Game
     public static readonly int ScreenWidth = 1920 / 2;
     public static readonly int ScreenHeight = 1080 / 2;
     public static readonly Color DebugColor = Color.Red;
+    public static readonly Color ThemeColor = new(0, 128, 128);
     public static readonly Vector2 ScreenCenter = new(ScreenWidth / 2, ScreenHeight / 2);
     public static readonly ScreenManager ScreenManager = new();
     public static readonly Peer Peer = new();
@@ -47,7 +48,7 @@ class MyGame : Game
     protected override void Initialize()
     {
         base.Initialize();
-        LoadScreen(new BootScreen(this));
+        LoadScreen(new RoomScreen(this));
     }
 
     protected override void LoadContent()

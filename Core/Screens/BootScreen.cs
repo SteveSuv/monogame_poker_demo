@@ -1,6 +1,5 @@
 using FontStashSharp;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Screens;
 
 class BootScreen(MyGame game) : GameScreen(game)
@@ -12,7 +11,6 @@ class BootScreen(MyGame game) : GameScreen(game)
 
     public override void Initialize()
     {
-
         world.ComponentManager.AddComponent(new CountdownComponent()
         {
             intervalSeconds = 2,
@@ -35,7 +33,7 @@ class BootScreen(MyGame game) : GameScreen(game)
     public override void Draw(GameTime gameTime)
     {
         MyGame.GraphicsDevice.Clear(Color.Black);
-        MyGame.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
+        MyGame.SpriteBatch.Begin();
         world.Draw();
         MyGame.SpriteBatch.End();
     }

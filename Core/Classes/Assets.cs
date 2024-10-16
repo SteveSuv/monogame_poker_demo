@@ -6,6 +6,7 @@ static class Assets
 {
     // textures
     public static readonly Texture2D TextureLogo = AssetsLoader.LoadTexture2D("/Assets/Images/Logo.png");
+    public static readonly Texture2D TextureCardsBack = AssetsLoader.LoadTexture2D("/Assets/Images/Card_Back-88x124.png");
     public static readonly Texture2D TextureCardsBlackClubs = AssetsLoader.LoadTexture2D("/Assets/Images/Clubs-88x124.png");
     public static readonly Texture2D TextureCardsRedDiamonds = AssetsLoader.LoadTexture2D("/Assets/Images/Diamonds-88x124.png");
     public static readonly Texture2D TextureCardsRedHearts = AssetsLoader.LoadTexture2D("/Assets/Images/Hearts-88x124.png");

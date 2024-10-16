@@ -1,5 +1,4 @@
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Screens;
 
 class LobbyScreen(MyGame game) : GameScreen(game)
@@ -17,6 +16,9 @@ class LobbyScreen(MyGame game) : GameScreen(game)
 
     public override void Initialize()
     {
+        var bg = new SpriteNode() { texture = Assets.TextureBackground, WorldPosition = new(0, 0), LayerDepth = 0 };
+        world.Children.Insert(0, bg);
+
         world.NodeManager.AddChild(new ButtonNode()
         {
             localPosition = new(-100, 10),
@@ -87,8 +89,8 @@ class LobbyScreen(MyGame game) : GameScreen(game)
 
     public override void Draw(GameTime gameTime)
     {
-        MyGame.GraphicsDevice.Clear(Color.DarkBlue);
-        MyGame.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
+        MyGame.GraphicsDevice.Clear(MyGame.ThemeColor);
+        MyGame.SpriteBatch.Begin();
         world.Draw();
         MyGame.SpriteBatch.End();
     }
