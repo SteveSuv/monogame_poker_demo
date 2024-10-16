@@ -4,11 +4,10 @@ class ComponentManager(Node belong)
 {
     public List<Component> components = [];
 
-    public ComponentManager AddComponent(Component component)
+    public void AddComponent(Component component)
     {
         component.belong = belong;
         components.Add(component);
-        return this;
     }
 
     public List<T> GetComponentsOfType<T>() where T : Component

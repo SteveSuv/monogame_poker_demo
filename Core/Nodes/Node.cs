@@ -10,10 +10,6 @@ class Node
         {
             return NodeManager.children;
         }
-        set
-        {
-            NodeManager.children = value;
-        }
     }
     public NodeManager NodeManager;
     public ComponentManager ComponentManager;

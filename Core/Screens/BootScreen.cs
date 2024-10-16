@@ -4,11 +4,7 @@ using MonoGame.Extended.Screens;
 
 class BootScreen(MyGame game) : GameScreen(game)
 {
-    private readonly Node world = new()
-    {
-        localPosition = MyGame.ScreenCenter,
-    };
-
+    private readonly Node world = new() { localPosition = MyGame.ScreenCenter };
     public override void Initialize()
     {
         world.ComponentManager.AddComponent(new CountdownComponent()

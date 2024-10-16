@@ -5,13 +5,10 @@ using MonoGame.Extended.Screens;
 
 class RoomScreen(MyGame game) : GameScreen(game)
 {
-
+    private readonly Node world = new() { localPosition = MyGame.ScreenCenter };
     private readonly Node myCardsNode = new() { localPosition = new(0, MyGame.ScreenHeight / 2 - 100) };
     private readonly List<Card> allCards = new Cards().cards;
-    private readonly Node world = new()
-    {
-        localPosition = MyGame.ScreenCenter,
-    };
+
 
     public override void Initialize()
     {
@@ -19,15 +16,15 @@ class RoomScreen(MyGame game) : GameScreen(game)
         world.Children.Insert(0, bg);
 
         var cardBackAtlas = new SpriteAtlas(Assets.TextureCardsBack) { regionWidth = 88, regionHeight = 124, maxRegionCount = 2 }.GetAtlas();
-        var cardBackRed = cardBackAtlas[0];
-        var cardBackNode = new SpriteRegionNode() { texture2DRegion = cardBackRed, scale = new(0.8f) };
-        cardBackNode.NodeManager.AddChild(new LabelNode() { tag = "CardsCount", text = $"剩余{allCards.Count}张牌", localPosition = new(0, 80) });
+        var cardBackNode = new SpriteRegionNode() { texture2DRegion = cardBackAtlas[0], scale = new(0.8f) };
         world.NodeManager.AddChild(cardBackNode);
 
+        world.NodeManager.AddChild(new LabelNode() { tag = "CardsCount", text = $"剩余{allCards.Count}张牌", localPosition = new(0, 80) });
 
         // PickCard();
-
-        world.NodeManager.AddChild(new Node()).ComponentManager.AddComponent(new ContinuousClockComponent()
+        var emptyNode = new Node();
+        world.NodeManager.AddChild(emptyNode);
+        emptyNode.ComponentManager.AddComponent(new ContinuousClockComponent()
         {
             intervalSeconds = 1,
             Tick = (object sender, EventArgs e) =>
@@ -98,7 +95,7 @@ class RoomScreen(MyGame game) : GameScreen(game)
         allCards.Shuffle(Random.Shared);
         var card = allCards[0];
         allCards.Remove(card);
-        // var cardsCountLabelNode = world.NodeManager.GetDeepChildByTag<LabelNode>("CardsCount");
-        // cardsCountLabelNode.text = $"剩余{allCards.Count}张牌";
+        var cardsCountLabelNode = world.NodeManager.GetChildByTag<LabelNode>("CardsCount");
+        cardsCountLabelNode.text = $"剩余{allCards.Count}张牌";
     }
 }

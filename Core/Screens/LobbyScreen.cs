@@ -3,29 +3,20 @@ using MonoGame.Extended.Screens;
 
 class LobbyScreen(MyGame game) : GameScreen(game)
 {
+    private readonly Node world = new() { localPosition = MyGame.ScreenCenter };
     private static RoomStatePacket RoomState => MyGame.Peer.peerClient.roomState;
-
-    private readonly Node world = new()
-    {
-        localPosition = MyGame.ScreenCenter,
-        Children = [
-            new LabelNode() { tag = "Name", fontSize = 30, localPosition = new(0, -200) },
-            new Node() { tag = "Clients" },
-        ]
-    };
 
     public override void Initialize()
     {
+        world.NodeManager.AddChild(new LabelNode() { tag = "Name", fontSize = 30, localPosition = new(0, -200) });
+        world.NodeManager.AddChild(new Node() { tag = "Clients" });
+
         var bg = new SpriteNode() { texture = Assets.TextureBackground, WorldPosition = new(0, 0), LayerDepth = 0 };
         world.Children.Insert(0, bg);
 
-        world.NodeManager.AddChild(new ButtonNode()
-        {
-            localPosition = new(-100, 10),
-            Children = [
-                new LabelNode() { text = "返回", color = Color.Black }
-            ]
-        }).ComponentManager.AddComponent(new MouseEventComponent()
+        var btn = new ButtonNode() { localPosition = new(-100, 10) };
+        btn.NodeManager.AddChild(new LabelNode() { text = "返回", color = Color.Black });
+        btn.ComponentManager.AddComponent(new MouseEventComponent()
         {
             OnClick = (object sender, Vector2 mousePos) =>
                     {
@@ -33,21 +24,19 @@ class LobbyScreen(MyGame game) : GameScreen(game)
                         MyGame.LoadScreen(new StartScreen(game));
                     }
         });
+        world.NodeManager.AddChild(btn);
 
 
-        world.NodeManager.AddChild(new ButtonNode()
-        {
-            localPosition = new(100, 10),
-            Children = [
-              new LabelNode() { text = "开始", color = Color.Black }
-          ]
-        }).ComponentManager.AddComponent(new MouseEventComponent()
+        var btn2 = new ButtonNode() { localPosition = new(100, 10) };
+        btn2.NodeManager.AddChild(new LabelNode() { text = "开始", color = Color.Black });
+        btn2.ComponentManager.AddComponent(new MouseEventComponent()
         {
             OnClick = (object sender, Vector2 mousePos) =>
                     {
                         MyGame.LoadScreen(new RoomScreen(game));
                     }
         });
+        world.NodeManager.AddChild(btn2);
 
         world.Initialize();
     }
