@@ -5,7 +5,7 @@ using MonoGame.Extended.Screens;
 class RoomScreen(MyGame game) : GameScreen(game)
 {
     private readonly Node world = new() { localPosition = MyGame.ScreenCenter };
-    private readonly Node myCardsNode = new() { localPosition = new(0, MyGame.ScreenHeight / 2 - 100) };
+    private readonly Node myCardsNode = new() { localPosition = new(0, MyGame.ScreenHeight / 2 - 60) };
     private readonly List<Card> allCards = new Cards().cards;
     private readonly List<Card> myCards = [];
 
@@ -25,13 +25,16 @@ class RoomScreen(MyGame game) : GameScreen(game)
             intervalSeconds = 0.2f,
             Tick = (object sender, EventArgs e) =>
             {
-                PickCard();
+                if (myCards.Count < 5)
+                {
+                    PickCard();
+                }
             }
         });
 
         world.NodeManager.AddChild(myCardsNode);
 
-        var labelNode = new LabelNode() { tag = "CardLabel", LayerDepth = -1, color = Color.Black, fontSize = 24 };
+        var labelNode = new LabelNode() { tag = "CardLabel", color = Color.Transparent, fontSize = 24 };
         world.NodeManager.AddChild(labelNode);
 
 
@@ -116,14 +119,25 @@ class RoomScreen(MyGame game) : GameScreen(game)
             {
                 OnMouseMove = (object sender, Vector2 mousePos) =>
                 {
-                    // world.NodeManager.AddChild(labelNode);
-                    cardLabel.LayerDepth = 1;
+                    cardLabel.color = Color.Black;
                     cardLabel.text = myCard.Label;
                     cardLabel.WorldPosition = mousePos + new Vector2(0, -20);
                 },
                 OnMouseLeave = (object sender, Vector2 mousePos) =>
                 {
-                    cardLabel.LayerDepth = -1;
+                    cardLabel.color = Color.Transparent;
+                },
+                OnClick = (object sender, Vector2 mousePos) =>
+                {
+                    if (singleCardNode.localPosition.Y == 0)
+                    {
+                        singleCardNode.localPosition.Y = -20;
+                    }
+                    else
+                    {
+                        singleCardNode.localPosition.Y = 0;
+                    }
+
                 },
             });
             myCardsNode.NodeManager.AddChild(singleCardNode);

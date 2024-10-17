@@ -13,6 +13,7 @@ class MyGame : Game
     public static MouseStateExtended MouseState => MouseExtended.GetState();
     public static KeyboardStateExtended KeyboardState => KeyboardExtended.GetState();
     public static Vector2 MousePos => MouseState.Position.ToVector2();
+    public static List<Node> hoveringNodes = [];
     public static bool IsDebug = false;
     public static new bool IsActive = false;
     public static readonly int ScreenWidth = 1920 / 2;
@@ -48,7 +49,7 @@ class MyGame : Game
     protected override void Initialize()
     {
         base.Initialize();
-        LoadScreen(new BootScreen(this));
+        LoadScreen(new RoomScreen(this));
     }
 
     protected override void LoadContent()

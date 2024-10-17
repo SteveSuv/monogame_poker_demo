@@ -4,6 +4,7 @@ using MonoGame.Extended;
 
 class Node
 {
+    public string ID;
     public List<Node> Children
     {
         get
@@ -58,6 +59,7 @@ class Node
 
     public Node()
     {
+        ID = Guid.NewGuid().ToString();
         NodeManager = new(this);
         ComponentManager = new(this);
     }

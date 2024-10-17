@@ -4,6 +4,7 @@ using MonoGame.Extended.Input;
 class MouseEventComponent : Component
 {
     public bool isHovering = false;
+
     public EventHandler<Vector2> OnMouseEnter = (object sender, Vector2 mousePos) => { };
     public EventHandler<Vector2> OnMouseDown = (object sender, Vector2 mousePos) => { };
     public EventHandler<Vector2> OnMouseUp = (object sender, Vector2 mousePos) => { };
@@ -23,9 +24,22 @@ class MouseEventComponent : Component
 
     private void CheckHoverState()
     {
+
         if (MyGame.IsActive)
         {
             if (belong.Rectangle.Contains(MyGame.MousePos))
+            {
+                if (!MyGame.hoveringNodes.Contains(belong))
+                {
+                    MyGame.hoveringNodes.Add(belong);
+                }
+            }
+            else
+            {
+                MyGame.hoveringNodes.Remove(belong);
+            }
+
+            if (MyGame.hoveringNodes.Contains(belong) && MyGame.hoveringNodes.LastIndexOf(belong) == 0)
             {
                 if (!isHovering)
                 {
@@ -60,7 +74,6 @@ class MouseEventComponent : Component
                 }
             }
         }
-
     }
 }
 
