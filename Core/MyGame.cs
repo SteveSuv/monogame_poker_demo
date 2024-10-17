@@ -49,7 +49,7 @@ class MyGame : Game
     protected override void Initialize()
     {
         base.Initialize();
-        LoadScreen(new RoomScreen(this));
+        LoadScreen(new BootScreen(this));
     }
 
     protected override void LoadContent()

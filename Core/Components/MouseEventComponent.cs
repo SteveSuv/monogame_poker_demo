@@ -39,38 +39,43 @@ class MouseEventComponent : Component
                 MyGame.hoveringNodes.Remove(belong);
             }
 
-            if (MyGame.hoveringNodes.Contains(belong) && MyGame.hoveringNodes.LastIndexOf(belong) == 0)
+            if (MyGame.hoveringNodes.Contains(belong))
             {
-                if (!isHovering)
-                {
-                    isHovering = true;
-                    OnMouseEnter.Invoke(this, MyGame.MousePos);
-                }
+                var depth = MyGame.hoveringNodes.Max(e => e.LayerDepth);
 
-                if (MyGame.MouseState.WasButtonPressed(MouseButton.Left))
+                if (belong.LayerDepth == depth)
                 {
-                    OnMouseDown.Invoke(this, MyGame.MousePos);
-                }
+                    if (!isHovering)
+                    {
+                        isHovering = true;
+                        OnMouseEnter.Invoke(this, MyGame.MousePos);
+                    }
 
-                if (MyGame.MouseState.WasButtonReleased(MouseButton.Left))
-                {
-                    OnMouseUp.Invoke(this, MyGame.MousePos);
-                    OnClick.Invoke(this, MyGame.MousePos);
-                }
+                    if (MyGame.MouseState.WasButtonPressed(MouseButton.Left))
+                    {
+                        OnMouseDown.Invoke(this, MyGame.MousePos);
+                    }
 
-                OnMouseMove.Invoke(this, MyGame.MousePos);
-            }
-            else
-            {
-                if (isHovering)
-                {
-                    isHovering = false;
-                    OnMouseLeave.Invoke(this, MyGame.MousePos);
-                }
+                    if (MyGame.MouseState.WasButtonReleased(MouseButton.Left))
+                    {
+                        OnMouseUp.Invoke(this, MyGame.MousePos);
+                        OnClick.Invoke(this, MyGame.MousePos);
+                    }
 
-                if (MyGame.MouseState.WasButtonPressed(MouseButton.Left))
+                    OnMouseMove.Invoke(this, MyGame.MousePos);
+                }
+                else
                 {
-                    OnOutSideClick.Invoke(this, MyGame.MousePos);
+                    if (isHovering)
+                    {
+                        isHovering = false;
+                        OnMouseLeave.Invoke(this, MyGame.MousePos);
+                    }
+
+                    if (MyGame.MouseState.WasButtonPressed(MouseButton.Left))
+                    {
+                        OnOutSideClick.Invoke(this, MyGame.MousePos);
+                    }
                 }
             }
         }

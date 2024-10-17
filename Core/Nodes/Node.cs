@@ -5,13 +5,7 @@ using MonoGame.Extended;
 class Node
 {
     public string ID;
-    public List<Node> Children
-    {
-        get
-        {
-            return NodeManager.children;
-        }
-    }
+    public List<Node> Children => NodeManager.children;
     public NodeManager NodeManager;
     public ComponentManager ComponentManager;
     public Node parent;
@@ -37,21 +31,25 @@ class Node
             {
                 localPosition = value - parent.WorldPosition;
             }
-
         }
     }
     public float rotation = 0;
     public Vector2 scale = Vector2.One;
     public Vector2 origin = Origin.Center;
     public Color color = Color.White;
+    private float _layerDepth = 0;
     public float LayerDepth
     {
         get
         {
-            if (parent == null) return 0;
+            if (_layerDepth != 0) return _layerDepth;
+            if (parent == null) return _layerDepth;
             return parent.LayerDepth;
         }
-        set { }
+        set
+        {
+            _layerDepth = value;
+        }
     }
     public Vector2 Size => GetSize();
     public Vector2 OriginOffset => origin * Size;

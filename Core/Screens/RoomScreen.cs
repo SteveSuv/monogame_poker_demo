@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Collections;
 using MonoGame.Extended.Screens;
 
@@ -34,32 +35,8 @@ class RoomScreen(MyGame game) : GameScreen(game)
 
         world.NodeManager.AddChild(myCardsNode);
 
-        var labelNode = new LabelNode() { tag = "CardLabel", color = Color.Transparent, fontSize = 24 };
+        var labelNode = new LabelNode() { tag = "CardLabel", color = Color.Transparent, fontSize = 30 };
         world.NodeManager.AddChild(labelNode);
-
-
-        // myCardsNode.NodeManager.AddChild(singleCardNode);
-        // var cardBlackClubAtlas = new SpriteAtlas(Assets.TextureCardsBlackClubs) { regionWidth = 88, regionHeight = 124, maxRegionCount = 13 }.GetAtlas();
-        // var cardNode = new SpriteRegionNode() { texture2DRegion = cardBlackClubAtlas[cardIndex] };
-        // cardNode.ComponentManager.AddComponent(new ContinuousClockComponent()
-        // {
-        //     intervalSeconds = 0.2f,
-        //     Tick = (object sender, EventArgs e) =>
-        //     {
-
-        //         if (cardIndex >= 12)
-        //         {
-        //             cardIndex = 0;
-        //         }
-        //         else
-        //         {
-        //             cardIndex++;
-        //         };
-
-        //         cardNode.texture2DRegion = cardBlackClubAtlas[cardIndex];
-        //     }
-        // });
-        // world.NodeManager.AddChild(cardNode);
 
         world.Initialize();
     }
@@ -72,7 +49,7 @@ class RoomScreen(MyGame game) : GameScreen(game)
     public override void Draw(GameTime gameTime)
     {
         MyGame.GraphicsDevice.Clear(MyGame.ThemeColor);
-        MyGame.SpriteBatch.Begin();
+        MyGame.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
         world.Draw();
         MyGame.SpriteBatch.End();
     }
@@ -113,20 +90,26 @@ class RoomScreen(MyGame game) : GameScreen(game)
         {
             var myCard = myCards[i];
             var x = i - (len - 1) / 2;
-            var singleCardNode = new SpriteRegionNode() { texture2DRegion = myCard.Texture2DRegion, scale = new(0.8f), localPosition = new(x * 40, 0) };
+            var singleCardNode = new SpriteRegionNode() { texture2DRegion = myCard.Texture2DRegion, scale = new(0.8f), localPosition = new(x * 40, 0), LayerDepth = i * 0.01f };
 
             singleCardNode.ComponentManager.AddComponent(new MouseEventComponent()
             {
                 OnMouseMove = (object sender, Vector2 mousePos) =>
                 {
-                    cardLabel.color = Color.Black;
+                    cardLabel.color = Color.Blue;
                     cardLabel.text = myCard.Label;
                     cardLabel.WorldPosition = mousePos + new Vector2(0, -20);
                 },
                 OnMouseLeave = (object sender, Vector2 mousePos) =>
                 {
                     cardLabel.color = Color.Transparent;
+                    cardLabel.text = "";
                 },
+                OnOutSideClick = (object sender, Vector2 mousePos) =>
+               {
+                   cardLabel.color = Color.Transparent;
+                   cardLabel.text = "";
+               },
                 OnClick = (object sender, Vector2 mousePos) =>
                 {
                     if (singleCardNode.localPosition.Y == 0)
