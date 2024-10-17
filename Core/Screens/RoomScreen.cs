@@ -31,6 +31,10 @@ class RoomScreen(MyGame game) : GameScreen(game)
 
         world.NodeManager.AddChild(myCardsNode);
 
+        var labelNode = new LabelNode() { tag = "CardLabel", LayerDepth = -1, color = Color.Black, fontSize = 24 };
+        world.NodeManager.AddChild(labelNode);
+
+
         // myCardsNode.NodeManager.AddChild(singleCardNode);
         // var cardBlackClubAtlas = new SpriteAtlas(Assets.TextureCardsBlackClubs) { regionWidth = 88, regionHeight = 124, maxRegionCount = 13 }.GetAtlas();
         // var cardNode = new SpriteRegionNode() { texture2DRegion = cardBlackClubAtlas[cardIndex] };
@@ -99,12 +103,29 @@ class RoomScreen(MyGame game) : GameScreen(game)
 
         myCardsNode.NodeManager.RemoveAllChildren();
 
+        var cardLabel = world.NodeManager.GetChildByTag<LabelNode>("CardLabel");
+
         var len = myCards.Count;
         for (int i = 0; i < len; i++)
         {
             var myCard = myCards[i];
             var x = i - (len - 1) / 2;
             var singleCardNode = new SpriteRegionNode() { texture2DRegion = myCard.Texture2DRegion, scale = new(0.8f), localPosition = new(x * 40, 0) };
+
+            singleCardNode.ComponentManager.AddComponent(new MouseEventComponent()
+            {
+                OnMouseMove = (object sender, Vector2 mousePos) =>
+                {
+                    // world.NodeManager.AddChild(labelNode);
+                    cardLabel.LayerDepth = 1;
+                    cardLabel.text = myCard.Label;
+                    cardLabel.WorldPosition = mousePos + new Vector2(0, -20);
+                },
+                OnMouseLeave = (object sender, Vector2 mousePos) =>
+                {
+                    cardLabel.LayerDepth = -1;
+                },
+            });
             myCardsNode.NodeManager.AddChild(singleCardNode);
         }
     }
